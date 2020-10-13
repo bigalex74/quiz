@@ -1,10 +1,30 @@
 import React, {Component} from 'react'
 import classes from './Drawer.css'
 import Backdrop from "../Backdrop/Backdrop";
-// import Backdrop from '../../UI/Backdrop/Backdrop'
+import {NavLink} from 'react-router-dom'
+import {ACCOUNT, LOG, MAIN, REGISTER} from "../../../Route/path";
 
 const links = [
-  1, 2, 3
+  {
+    to: MAIN,
+    title: 'Главная',
+    exact: true
+  },
+  {
+    to: ACCOUNT,
+    title: 'Личный кабинет',
+    exact: false
+  },
+  {
+    to: LOG,
+    title: 'Вход',
+    exact: false
+  },
+  {
+    to: REGISTER,
+    title: 'Зарегистрироваться',
+    exact: false
+  },
 ];
 
 class Drawer extends Component {
@@ -13,7 +33,9 @@ class Drawer extends Component {
     return links.map((link, index) => {
       return (
         <li key={index}>
-          <a href={link}>Link {link}</a>
+          <NavLink exact={link.exact} to={link.to}>
+            {link.title}
+          </NavLink>
         </li>
       )
     })
@@ -29,7 +51,7 @@ class Drawer extends Component {
     return (
       <React.Fragment>
         <nav className={cls.join(' ')}>
-          <ul>
+          <ul onClick={this.props.onClose}>
             { this.renderLinks() }
           </ul>
         </nav>
