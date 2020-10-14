@@ -5,7 +5,7 @@ import Layout from "./Layout/Layout";
 import Main from "./Containers/Main/Main";
 import Account from "./Containers/Account/Account";
 import Log from "./Containers/Log/Log";
-import Register from "./Containers/Register/Register";
+import SignUp from "./Containers/Register/Register";
 import Test from "./Containers/Test/Test";
 import {ACCOUNT, LOG, MAIN, REGISTER, TEST} from "./Route/path";
 
@@ -17,7 +17,7 @@ function App() {
           <Route path={MAIN} exact component={Main}/>
           <Route path={ACCOUNT} component={Account}/>
           <Route path={LOG} component={Log}/>
-          <Route path={REGISTER} component={Register}/>
+          <Route path={REGISTER} component={SignUp}/>
           <Route path={TEST} component={Test}/>
         </Switch>
         <Main/>
