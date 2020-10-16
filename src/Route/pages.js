@@ -1,24 +1,37 @@
-import {ACCOUNT, LOG, MAIN, REGISTER} from "./path";
+import {ACCOUNT, LOGIN, MAIN, REGISTER} from "./path";
+import React from 'react';
+import HomeIcon from '@material-ui/icons/Home';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 export const Pages = [
   {
+    id: 'main',
     to: MAIN,
     title: 'Главная',
-    exact: true
+    exact: true,
+    icon: <HomeIcon />
   },
   {
+    id: 'account',
     to: ACCOUNT,
     title: 'Личный кабинет',
-    exact: false
+    exact: false,
+    icon: <AccountBoxIcon/>
   },
   {
-    to: LOG,
+    id: 'login',
+    to: LOGIN,
     title: 'Вход',
-    exact: false
+    exact: false,
+    icon: <LockOpenIcon/>
   },
   {
+    id: 'register',
     to: REGISTER,
     title: 'Зарегистрироваться',
-    exact: false
+    exact: false,
+    icon: <PersonAddIcon/>
   },
 ];

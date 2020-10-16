@@ -46,8 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp(props) {
   const classes = useStyles();
+  const typeAuth = props.match.params.name;
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,9 +58,9 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Зарегистрироваться
+          {typeAuth === 'reg' ? 'Регистрация' : 'Авторизация'}
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={(e)=>{e.preventDefault();}}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -71,6 +72,7 @@ export default function SignUp() {
                 id="firstName"
                 label="Имя"
                 autoFocus
+                disabled={typeAuth === 'log'}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -82,6 +84,7 @@ export default function SignUp() {
                 label="Фамилия"
                 name="lastName"
                 autoComplete="lname"
+                disabled={typeAuth === 'log'}
               />
             </Grid>
             <Grid item xs={12}>
@@ -92,7 +95,9 @@ export default function SignUp() {
                 id="email"
                 label="Email адрес"
                 name="email"
+                type="email"
                 autoComplete="email"
+                autoFocus={typeAuth === 'log'}
               />
             </Grid>
             <Grid item xs={12}>
@@ -115,12 +120,12 @@ export default function SignUp() {
             color="primary"
             className={classes.submit}
           >
-            Зарегистрироваться
+            {typeAuth === 'reg' ? 'Зарегистрироваться' : 'Войти'}
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
-                Уже зарегистрированы? Войти
+              <Link href={typeAuth === 'reg'? "#" : "##"} variant="body2">
+                {typeAuth === 'reg' ? 'Уже зарегистрированы? Войти' : 'Не зарегистрированы? Регистрация'}
               </Link>
             </Grid>
           </Grid>

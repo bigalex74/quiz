@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import classes from './Drawer.css'
 import Backdrop from "../Backdrop/Backdrop";
 import {NavLink} from 'react-router-dom'
-import {ACCOUNT, LOG, MAIN, REGISTER} from "../../../Route/path";
+import {ACCOUNT, LOG, MAIN, AUTH} from "../../../Route/path";
 
 const links = [
   {
@@ -21,7 +21,7 @@ const links = [
     exact: false
   },
   {
-    to: REGISTER,
+    to: AUTH,
     title: 'Зарегистрироваться',
     exact: false
   },
