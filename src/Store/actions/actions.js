@@ -29,3 +29,30 @@ export function initFirebase() {
     }))
   }
 }
+export function signUp(name, lname, email, password) {
+  console.log(name, lname, email, password);
+  return (dispatch, getState) => {
+    console.log('current state:', getState());
+    let {auth} = getState();
+    console.log(auth);
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(user=>{
+        auth.currentUser.updateProfile({
+          displayName: name + ' ' + lname
+        }).then(function() {
+          // Update successful.
+          console.log(user);
+          dispatch(setFirebasse({user}))
+        }, function(error) {
+          // An error happened.
+          console.log(error);
+        });
+      })
+      .catch(function(error) {
+        dispatch(setFirebasse({user: error}));
+        console.log(error.code);
+        console.log(error.message);
+      }
+    );
+  }
+}
