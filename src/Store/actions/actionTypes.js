@@ -1,0 +1,2 @@
+export const INIT_FIREBASE = 'INIT_FIREBASE';
+export const SET_FIREBASE = 'SET_FIREBASE';
