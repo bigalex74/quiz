@@ -13,8 +13,16 @@ import Typography from '@material-ui/core/Typography';
 // import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
-import {signUp} from "../../Store/actions/actions";
+import {signIn, signUp} from "../../Store/actions/actions";
 import {connect} from "react-redux";
+import {ACCOUNT, MAIN} from "../../Route/path";
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import {isTeacher} from "../../Store/helper";
 
 function Copyright() {
   return (
@@ -54,14 +62,27 @@ class SignUp extends React.Component{
     super(props);
     // привяжем намертво контекст
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.typeAuth = this.props.match.params.name;
     this.state = {
       firstName: '',
       lastName: '',
       email: '',
-      password: ''
+      password: '',
+      message: {},
+      showDialog: false,
+      redirect: false
     }
   }
-  typeAuth = this.props.match.params.name;
+  // componentDidMount() {
+  //   this.typeAuth = this.props.match.params.name;
+  // }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    this.typeAuth = nextProps.match.params.name;
+    this.setState({
+      password: ''
+    });
+  }
 
   handleInputChange(e) {
     this.setState({
@@ -69,21 +90,56 @@ class SignUp extends React.Component{
     });
   }
 
-  onClickHandle() {
-    if (this.typeAuth === 'reg') {
-      this.props.signUpFirebase(
-        this.state.firstName,
-        this.state.lastName,
-        this.state.email,
-        this.state.password
-      )
-    }
-    console.log(this.state);
-  }
+  async onClickHandle() {
+    let title = 'Ошибка ';
+    try {
+      if (this.typeAuth === 'reg') {
+        title += 'регистрации';
+        await this.props.signUpFirebase(
+          this.state.firstName,
+          this.state.lastName,
+          this.state.email,
+          this.state.password
+        );
 
+      } else {
+        title += 'аутентификации';
+        await this.props.signInFirebase(
+          this.state.email,
+          this.state.password
+        )
+      }
+      this.setState({
+        showDialog: true,
+        redirect: true,
+        message: {
+          title: `Уважаемый, ${this.props.user.displayName}`,
+          message: 'Добро пожаловать в систему прохождения тестов. Очень надеюсь вам понравиться!!!',
+        }
+      });
+    } catch (e) {
+      this.setState({
+        showDialog: true,
+        redirect: false,
+        message: {...e, title},
+      })
+    }
+
+  }
+  handleCloseDialog() {
+    this.setState({
+      showDialog: false
+    });
+    if (this.state.redirect) {
+      if (isTeacher(this.props.user.email))
+        this.props.history.push(ACCOUNT);
+      else
+        this.props.history.push(MAIN);
+    }
+  };
   render () {
     const { classes } = this.props;
-    // console.log(classes);
+
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -177,19 +233,43 @@ class SignUp extends React.Component{
         <Box mt={5}>
           <Copyright />
         </Box>
+        <Dialog
+          open={this.state.showDialog}
+          onClose={()=>{this.handleCloseDialog()}}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{this.state.message.title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {this.state.message.message}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>{this.handleCloseDialog()}} color="primary" autoFocus >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     );
   }
 
 }
 
-// function mapStateToProps(state) {
-// }
+function mapStateToProps(state) {
+  return {
+    error: state.error,
+    user: state.user
+  }
+}
+
 
 function mapDispatchToProps(dispatch) {
   return {
     signUpFirebase: (name, lname, email, password) => dispatch(signUp(name, lname, email, password)),
+    signInFirebase: (email, password) => dispatch(signIn(email, password))
   }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(useStyles)(SignUp))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(SignUp))

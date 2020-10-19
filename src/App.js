@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './App.css';
-import {Route, Switch, Redirect} from 'react-router-dom';
+import {Route, Switch, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux'
 import {initFirebase} from './Store/actions/actions';
 
@@ -9,13 +9,23 @@ import Main from "./Containers/Main/Main";
 import Account from "./Containers/Account/Account";
 import SignUp from "./Containers/Register/Register";
 import Test from "./Containers/Test/Test";
-import {ACCOUNT, MAIN, AUTH, TEST} from "./Route/path";
+import {ACCOUNT, MAIN, AUTH, TEST, LOGIN} from "./Route/path";
 import CssBaseline from '@material-ui/core/CssBaseline';
+import {isTeacher} from "./Store/helper";
 
 class App extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     // при старте приложения инициализируем бд в firebase
-    this.props.initFirebase()
+    console.log('1');
+    await this.props.initFirebase();
+    console.log('2', this.props);
+    if (this.props.user !== null)
+      if (isTeacher(this.props.user.email))
+        this.props.history.push(ACCOUNT);
+      else
+        this.props.history.push(MAIN);
+    else
+      this.props.history.push(LOGIN);
   }
 
   render() {
@@ -39,8 +49,11 @@ class App extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-// }
+function mapStateToProps(state) {
+  return {
+    user: state.user
+  }
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -48,4 +61,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App))
