@@ -16,9 +16,7 @@ import {isTeacher} from "./Store/helper";
 class App extends React.Component {
   async componentDidMount() {
     // при старте приложения инициализируем бд в firebase
-    console.log('1');
     await this.props.initFirebase();
-    console.log('2', this.props);
     if (this.props.user !== null)
       if (isTeacher(this.props.user.email))
         this.props.history.push(ACCOUNT);

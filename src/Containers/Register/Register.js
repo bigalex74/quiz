@@ -3,9 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
+import Copyright from '../../Components/Copyright/copyright'
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -15,27 +13,14 @@ import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
 import {signIn, signUp} from "../../Store/actions/actions";
 import {connect} from "react-redux";
-import {ACCOUNT, MAIN} from "../../Route/path";
-
+import {ACCOUNT, LOGIN, MAIN, REGISTER} from "../../Route/path";
+import {Link as LinkRouter} from 'react-router-dom'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {isTeacher} from "../../Store/helper";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Денисова Юлия Алексеевна
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = (theme) => ({
   paper: {
@@ -55,6 +40,9 @@ const useStyles = (theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  link: {
+    color: theme.palette.text.secondary,
+  }
 });
 
 class SignUp extends React.Component{
@@ -79,9 +67,10 @@ class SignUp extends React.Component{
 
   componentWillReceiveProps(nextProps, nextState) {
     this.typeAuth = nextProps.match.params.name;
-    this.setState({
-      password: ''
-    });
+    if (nextState.password !== '')
+      this.setState({
+        password: ''
+      });
   }
 
   handleInputChange(e) {
@@ -223,9 +212,9 @@ class SignUp extends React.Component{
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href={this.typeAuth === 'reg'? "#" : "##"} variant="body2">
+                <LinkRouter to={this.typeAuth === 'reg'? LOGIN : REGISTER} className={classes.link} activeClassName={classes.link} >
                   {this.typeAuth === 'reg' ? 'Уже зарегистрированы? Войти' : 'Не зарегистрированы? Регистрация'}
-                </Link>
+                </LinkRouter>
               </Grid>
             </Grid>
           </form>
