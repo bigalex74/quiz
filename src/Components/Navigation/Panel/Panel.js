@@ -18,7 +18,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {connect} from "react-redux";
-import {signOut} from "../../../Store/actions/actions";
+import {signOut} from "../../../Store/actions/rootActions";
 import {ACCOUNT, LOGIN, MAIN, REGISTER} from "../../../Route/path";
 import {isTeacher} from "../../../Store/helper";
 

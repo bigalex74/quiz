@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './App.css';
 import {Route, Switch, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux'
-import {initFirebase} from './Store/actions/actions';
+import {initFirebase} from './Store/actions/rootActions';
 
 import Layout from "./Layout/Layout";
 import Main from "./Containers/Main/Main";

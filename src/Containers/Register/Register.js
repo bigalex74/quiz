@@ -8,10 +8,10 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-// import { makeStyles } from '@material-ui/core/styles';
+
 import { withStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
-import {signIn, signUp} from "../../Store/actions/actions";
+import {signIn, signUp} from "../../Store/actions/rootActions";
 import {connect} from "react-redux";
 import {ACCOUNT, LOGIN, MAIN, REGISTER} from "../../Route/path";
 import {Link as LinkRouter} from 'react-router-dom'

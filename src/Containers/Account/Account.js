@@ -1,10 +1,8 @@
 import React, {forwardRef} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-// import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Card from '@material-ui/core/Card';
 import MaterialTable from 'material-table'
@@ -33,14 +31,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     '& > *': {
-      margin: theme.spacing(4),
+      margin: theme.spacing(2),
       width: theme.spacing(200),
-      height: theme.spacing(70),
     },
   },
   card: {
-    margin: theme.spacing(4),
-    width: theme.spacing(180),
+    marginTop: theme.spacing(4),
     height: theme.spacing(16),
   },
   chip: {
@@ -71,8 +67,7 @@ const tableIcons = {
 function Editable() {
   const { useState } = React;
 
-  // eslint-disable-next-line
-  const [columns, setColumns] = useState([
+  const [columns] = useState([
     { title: 'Наименование теста', field: 'name', render: rowData =>
         <Typography component="p" variant="subtitle1">
           {rowData.name}
@@ -111,7 +106,7 @@ function Editable() {
       columns={columns}
       data={data}
       options={{
-        pageSizeOptions: [5],
+        pageSizeOptions: [5,10,20],
         headerStyle: {fontSize: 16, fontWeight: 600}
       }}
       actions={[
