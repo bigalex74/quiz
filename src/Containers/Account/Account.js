@@ -188,11 +188,9 @@ class Account extends React.Component {
             }}
             editable={{
               onRowAdd: newData =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    this.props.addQuiz({...newData, access: parseInt(newData.access)});
-                    resolve();
-                  }, 0)
+                new Promise(async (resolve) => {
+                  await this.props.addQuiz({...newData, access: parseInt(newData.access)});
+                  resolve();
                 }),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve) => {
@@ -202,11 +200,9 @@ class Account extends React.Component {
                   }, 0)
                 }),
               onRowDelete: oldData =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    this.props.delQuiz(oldData.tableData.id);
-                    resolve()
-                  }, 0)
+                new Promise(async (resolve) => {
+                  await this.props.delQuiz(oldData);
+                  resolve()
                 }),
             }}
           />
@@ -220,6 +216,7 @@ class Account extends React.Component {
 }
 
 function mapStateToProps(state) {
+  // console.log(state.listQuizes);
   return {
     data: state.listQuizes
   }
@@ -231,7 +228,7 @@ function mapDispatchToProps(dispatch) {
   return {
     addQuiz: (quiz) => dispatch(addQuiz(quiz)),
     setQuiz: (quiz, index) => dispatch(setQuiz(quiz, index)),
-    delQuiz: (index) => dispatch(delQuiz(index)),
+    delQuiz: (quiz) => dispatch(delQuiz(quiz)),
   }
 }
 

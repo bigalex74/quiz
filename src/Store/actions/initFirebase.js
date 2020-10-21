@@ -1,5 +1,8 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 import {setFirebasse} from "./actions";
+import {initDataUser} from "./quizFirebase";
 
 export function initFirebase() {
   return (dispatch) => {
@@ -23,7 +26,7 @@ export function initFirebase() {
       auth.onAuthStateChanged(function(user) {
         if (user) {
           dispatch(setFirebasse({user}));
-
+          dispatch(initDataUser());
         }
         resolve()
       });

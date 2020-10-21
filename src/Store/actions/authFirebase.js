@@ -10,7 +10,6 @@ export function signUp(name, lname, email, password) {
             displayName: name + ' ' + lname
           }).then(function() {
             // Update successful.
-            // console.log(auth, user);
             dispatch(setFirebasse({auth, user: {...auth.currentUser, displayName: name + ' ' + lname}}));
             resolve()
           }, function(error) {

@@ -106,6 +106,9 @@ class SignUp extends React.Component{
           message: 'Добро пожаловать в систему прохождения тестов. Очень надеюсь вам понравиться!!!',
         }
       });
+      // На этом этапе пользователь аутентифицировался, либо зарегистрировался
+      // можем загрузить из бд все данные пока он вдупляет на окно приветсвия и ищет кнопку ОК
+
     } catch (e) {
       this.setState({
         showDialog: true,
@@ -212,7 +215,7 @@ class SignUp extends React.Component{
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <LinkRouter to={this.typeAuth === 'reg'? LOGIN : REGISTER} className={classes.link} activeClassName={classes.link} >
+                <LinkRouter to={this.typeAuth === 'reg'? LOGIN : REGISTER} className={classes.link} activeclassname={classes.link} >
                   {this.typeAuth === 'reg' ? 'Уже зарегистрированы? Войти' : 'Не зарегистрированы? Регистрация'}
                 </LinkRouter>
               </Grid>

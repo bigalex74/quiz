@@ -11,31 +11,30 @@ const initialState = {
 
 export default function firebaseReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_FIREBASE:
+    case SET_FIREBASE: {
+      // console.log('action.params', action.params);
       return {
         ...state, ...action.params
       };
+    }
     case ADD_QUIZ: {
-      let listQuizes = [...state.listQuizes];
-      listQuizes.push(action.quiz);
+      // let listQuizes = [...state.listQuizes];
+      // console.log('listQuizes',listQuizes);
+      // listQuizes.push(action.quiz);
       return {
-        ...state, listQuizes: [...listQuizes]
+        ...state //, listQuizes: [...listQuizes]
       };
     }
     case SET_QUIZ: {
       let listQuizes = [...state.listQuizes];
       listQuizes[action.payload.index] = action.payload.quiz;
-      // console.log(listQuizes);
       return {
         ...state, listQuizes: [...listQuizes]
       };
     }
     case DEL_QUIZ: {
       let listQuizes = [...state.listQuizes];
-      // console.log('del', listQuizes, action.payload.index);
       listQuizes.splice(action.payload.index, 1);
-      // console.log('del', listQuizes);
-      // console.log(listQuizes);
       return {
         ...state, listQuizes: [...listQuizes]
       }
