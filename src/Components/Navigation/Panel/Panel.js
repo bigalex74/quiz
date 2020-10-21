@@ -187,7 +187,7 @@ const ApplicationBar = props => {
 };
 
 function mapStateToProps(state) {
-  console.log(state);
+  // console.log(state);
   return {
     user: state.user
   }

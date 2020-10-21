@@ -10,7 +10,7 @@ export function signUp(name, lname, email, password) {
             displayName: name + ' ' + lname
           }).then(function() {
             // Update successful.
-            console.log(auth, user);
+            // console.log(auth, user);
             dispatch(setFirebasse({auth, user: {...auth.currentUser, displayName: name + ' ' + lname}}));
             resolve()
           }, function(error) {
@@ -36,7 +36,7 @@ export function signIn(email, password) {
       let {auth} = getState();
       auth.signInWithEmailAndPassword(email, password)
         .then(()=>{
-          console.log(auth);
+          // console.log(auth);
           dispatch(setFirebasse({auth, user: auth.currentUser}));
           resolve();
         })
@@ -54,7 +54,7 @@ export function signOut() {
     let {auth} = getState();
     auth.signOut()
       .then(()=>{
-        console.log(auth);
+        // console.log(auth);
         dispatch(setFirebasse({auth, user: auth.currentUser}))
       })
       .catch(function(error) {
