@@ -129,6 +129,23 @@ class SignUp extends React.Component{
         this.props.history.push(MAIN);
     }
   };
+
+  enableButton() {
+    if (this.typeAuth === 'reg') {
+      return (
+        this.state.firstName !== '' &&
+        this.state.lastName !== '' &&
+        this.state.email !== '' &&
+        this.state.password !== ''
+      )
+    } else {
+      return (
+        this.state.email !== '' &&
+        this.state.password !== ''
+      )
+    }
+  };
+
   render () {
     const { classes } = this.props;
 
@@ -210,6 +227,7 @@ class SignUp extends React.Component{
               color="primary"
               className={classes.submit}
               onClick={this.onClickHandle.bind(this)}
+              disabled={!this.enableButton()}
             >
               {this.typeAuth === 'reg' ? 'Зарегистрироваться' : 'Войти'}
             </Button>

@@ -1,5 +1,4 @@
-import {SET_QUIZ} from "./actionTypes";
-import {addQuizInList, delQuizInList, setFirebasse} from "./actions";
+import {addQuizInList, delQuizInList, setFirebasse, setQuizInList} from "./actions";
 
 export function addQuiz(quiz) {
   return (dispatch, getState) => {
@@ -13,10 +12,15 @@ export function addQuiz(quiz) {
   }
 }
 export function setQuiz(quiz, index) {
-  // console.log(quiz,index);
-  return {
-    type: SET_QUIZ,
-    payload: {quiz, index}
+  return (dispatch, getState) => {
+    return new Promise(resolve => {
+      let {db} = getState();
+      let key = quiz.key;
+      let ref = db.ref(key);
+      ref.update(quiz);
+      dispatch(setQuizInList(quiz, index));
+      resolve()
+    })
   }
 }
 export function delQuiz(quiz) {
@@ -37,12 +41,10 @@ export function initDataUser() {
     let {db, user} = getState();
     let ref = db.ref();
     let listQuizes = [];
-    // console.log('user uid', user.uid);
     ref.orderByChild("uid").equalTo(user.uid).on("child_added", function(data) {
       const dv = data.val();
       const dk = data.key;
       listQuizes.push({...dv, key: dk});
-      // console.log(listQuizes);
       dispatch(setFirebasse({listQuizes: [...listQuizes]}));
     });
   }
