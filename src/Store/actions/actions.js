@@ -5,7 +5,7 @@ import {
   CLEAR_QUESTIONS, DEL_ANSWERS,
   DEL_QUESTIONS,
   DEL_QUIZ, SET_ANSWERS,
-  SET_FIREBASE,
+  SET_FIREBASE, SET_LOADER,
   SET_QUESTIONS,
   SET_QUIZ
 } from "./actionTypes";
@@ -16,7 +16,12 @@ export function setFirebasse(params) {
     params
   }
 }
-
+export function setLoader(params) {
+  return {
+    type: SET_LOADER,
+    params
+  }
+}
 export function addQuizInList(quiz) {
   return {
     type: ADD_QUIZ,

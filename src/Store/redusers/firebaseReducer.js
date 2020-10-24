@@ -4,7 +4,7 @@ import {
   ADD_QUIZ, CLEAR_ANSWERS,
   CLEAR_QUESTIONS, DEL_ANSWERS, DEL_QUESTIONS,
   DEL_QUIZ, SET_ANSWERS,
-  SET_FIREBASE,
+  SET_FIREBASE, SET_LOADER,
   SET_QUESTIONS,
   SET_QUIZ
 } from "../actions/actionTypes";
@@ -17,6 +17,7 @@ const initialState = {
   listQuizes: [],
   questions: [],
   answers: [],
+  loader: false
 
 };
 
@@ -27,6 +28,12 @@ export default function firebaseReducer(state = initialState, action) {
       // console.log('action.params', action.params);
       return {
         ...state, ...action.params
+      };
+    }
+    case SET_LOADER: {
+      // console.log('action.params', action.params);
+      return {
+        ...state, loader: action.params
       };
     }
     case ADD_QUIZ: {

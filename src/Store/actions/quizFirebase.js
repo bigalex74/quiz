@@ -5,7 +5,7 @@ export function addQuiz(quiz) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       let {db, user} = getState();
-      let ref = db.ref();
+      let ref = db.ref('quiz');
       ref.push({...quiz, uid: user.uid});
       dispatch(addQuizInList(quiz));
       resolve()
@@ -17,7 +17,7 @@ export function setQuiz(quiz, index) {
     return new Promise(resolve => {
       let {db} = getState();
       let key = quiz.key;
-      let ref = db.ref(key);
+      let ref = db.ref('quiz/'+key);
       ref.update({...quiz, key: null});
       dispatch(setQuizInList(quiz, index));
       resolve()
@@ -29,7 +29,7 @@ export function delQuiz(quiz) {
     return new Promise(resolve => {
       let {db} = getState();
       let key = quiz.key;
-      let ref = db.ref(key);
+      let ref = db.ref('quiz'+key);
       ref.remove();
       dispatch(delAllQuestionsFromQuiz(key));
       dispatch(delQuizInList(quiz.tableData.id));
@@ -41,13 +41,32 @@ export function initDataUser() {
   return (dispatch, getState) => {
     dispatch(setFirebasse({listQuizes: []}));
     let {db, user} = getState();
-    let ref = db.ref();
+    let ref = db.ref('quiz');
     let listQuizes = [];
     ref.orderByChild("uid").equalTo(user.uid).on("child_added", function(data) {
       const dv = data.val();
       const dk = data.key;
       listQuizes.push({...dv, key: dk});
       dispatch(setFirebasse({listQuizes: [...listQuizes]}));
+    });
+  }
+}
+export function getAllQuiz() {
+  return (dispatch, getState) => {
+    return new Promise(resolve => {
+      dispatch(setFirebasse({listQuizes: []}));
+      let {db} = getState();
+      let ref = db.ref('quiz');
+      let listQuizes = [];
+      ref.once("value").then(snapshot => {
+        Object.entries(snapshot.val()).forEach((key) => {
+          // Уберем из списка приватные тесты
+          if (key[1].access !== 2)
+            listQuizes.push({...key[1], key: key[0]})
+        });
+        dispatch(setFirebasse({listQuizes: [...listQuizes]}));
+        resolve();
+      });
     });
   }
 }

@@ -1,4 +1,4 @@
-export const MAIN = "/";
+export const MAIN = "/main";
 export const ACCOUNT = "/account";
 export const AUTH = "/register/:name";
 export const TEST = "/test/:name";

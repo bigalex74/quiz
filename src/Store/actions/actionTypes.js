@@ -1,4 +1,5 @@
 export const SET_FIREBASE = 'SET_FIREBASE';
+export const SET_LOADER = 'SET_LOADER';
 
 export const ADD_QUIZ = 'ADD_QUIZ';
 export const SET_QUIZ = 'SET_QUIZ';

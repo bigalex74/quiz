@@ -1,8 +1,9 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
-import {setFirebasse} from "./actions";
-import {initDataUser} from "./quizFirebase";
+import {setFirebasse, setLoader} from "./actions";
+import {getAllQuiz, initDataUser} from "./quizFirebase";
+import {isTeacher} from "../helper";
 
 export function initFirebase() {
   return (dispatch) => {
@@ -17,17 +18,22 @@ export function initFirebase() {
         appId: "1:1028821584667:web:70f1064583b68d084da1be"
       };
       // Initialize Firebase
+      dispatch(setLoader(true));
       const app = firebase.initializeApp(firebaseConfig);
       const auth = app.auth();
       dispatch(setFirebasse({
         db: app.database(),
         auth: auth
       }));
-      auth.onAuthStateChanged(function(user) {
+      auth.onAuthStateChanged(async function(user) {
         if (user) {
-          dispatch(setFirebasse({user}));
-          dispatch(initDataUser());
+          await dispatch(setFirebasse({user}));
+          if (isTeacher(user.email))
+           await dispatch(initDataUser());
+          else
+           await dispatch(getAllQuiz());
         }
+        dispatch(setLoader(false));
         resolve()
       });
 
