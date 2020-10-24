@@ -1,4 +1,5 @@
 import {addQuizInList, delQuizInList, setFirebasse, setQuizInList} from "./actions";
+import {delAllQuestionsFromQuiz} from "./questionFirebase";
 
 export function addQuiz(quiz) {
   return (dispatch, getState) => {
@@ -17,7 +18,7 @@ export function setQuiz(quiz, index) {
       let {db} = getState();
       let key = quiz.key;
       let ref = db.ref(key);
-      ref.update(quiz);
+      ref.update({...quiz, key: null});
       dispatch(setQuizInList(quiz, index));
       resolve()
     })
@@ -30,6 +31,7 @@ export function delQuiz(quiz) {
       let key = quiz.key;
       let ref = db.ref(key);
       ref.remove();
+      dispatch(delAllQuestionsFromQuiz(key));
       dispatch(delQuizInList(quiz.tableData.id));
       resolve()
     })

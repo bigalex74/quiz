@@ -2,6 +2,8 @@ export * from './actions';
 export * from './authFirebase';
 export * from './initFirebase';
 export * from './quizFirebase';
+export * from './questionFirebase';
+export * from './answerFirebase';
 
 
 

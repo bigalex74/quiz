@@ -9,7 +9,10 @@ import Main from "./Containers/Main/Main";
 import Account from "./Containers/Account/Account";
 import SignUp from "./Containers/Register/Register";
 import Test from "./Containers/Test/Test";
-import {ACCOUNT, MAIN, AUTH, TEST, LOGIN} from "./Route/path";
+import EditQuestions from './Containers/Account/editQuestions';
+import EditAnswers from './Containers/Account/editAnswers';
+
+import {ACCOUNT, MAIN, AUTH, TEST, LOGIN, EDIT_QUESTIONS, EDIT_ANSWERS} from "./Route/path";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {isTeacher} from "./Store/helper";
 
@@ -37,6 +40,8 @@ class App extends React.Component {
               <Route path={ACCOUNT} component={Account}/>
               <Route path={AUTH} component={SignUp}/>
               <Route path={TEST} component={Test}/>
+              <Route path={EDIT_QUESTIONS} component={EditQuestions}/>
+              <Route path={EDIT_ANSWERS} component={EditAnswers}/>
               <Redirect to={MAIN}/>
             </Switch>
             <Main/>

@@ -1,20 +1,11 @@
 import React, {forwardRef} from 'react';
-// import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Card from '@material-ui/core/Card';
-import MaterialTable from 'material-table'
-import Chip from '@material-ui/core/Chip';
+import MaterialTable, {MTableToolbar} from 'material-table'
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -35,8 +26,8 @@ import Grid from '@material-ui/core/Grid';
 import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
-import {addQuiz, setQuiz, delQuiz} from "../../Store/actions/rootActions";
-import {EDIT_QUESTIONS_PATH} from "../../Route/path";
+import {initQuestionsList, addQuestion, delQuestion, setQuestion} from "../../Store/actions/rootActions";
+import {ACCOUNT, EDIT_ANSWERS_PATH} from "../../Route/path";
 
 const useStyles = theme => ({
   root: {
@@ -58,6 +49,10 @@ const useStyles = theme => ({
   },
   gridCol: {
     marginLeft: 20,
+  },
+  button: {
+      margin: theme.spacing(0, 0, 2, 3),
+
   }
 });
 
@@ -82,40 +77,28 @@ const tableIcons = {
 };
 
 
-class Account extends React.Component {
+class EditQuestions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: [
         {
-          title: 'Наименование теста', field: 'name', render: rowData =>
+          title: 'Вопрос', field: 'name', render: rowData =>
             <Typography component="p" variant="subtitle1">
               {rowData.name}
             </Typography>
         },
-        {
-          title: 'Видимость', field: 'access',
-          render: rowData => {
-            switch (rowData.access) {
-              case 0:
-                return <Chip style={{fontSize: 16}} label="Публичный" color="primary"/>;
-              case 1:
-                return <Chip style={{fontSize: 16}} label="Ограниченный"/>;
-              case 2:
-                return <Chip style={{fontSize: 16}} label="Приватный" color="secondary"/>;
-              default:
-                return null;
-            }
-          },
-          lookup: {0: 'Публичный', 1: 'Ограниченный', 2: 'Приватный'},
-          initialEditValue: '1',
-          type: 'numeric',
-          align: 'right'
-        },
       ],
-      open: false,
-      rowData: null
+      nameQuiz: ''
     }
+  }
+
+  async componentDidMount() {
+    await this.props.initQuestionsList(this.props.match.params.name);    // Очистим список вопросов и заполним список вопросами редактируемого теста
+    this.setState({
+      nameQuiz: this.props.listQuizes.find(item => item.key === this.props.match.params.name).name
+    })
+
   }
 
   render() {
@@ -125,26 +108,37 @@ class Account extends React.Component {
         <CssBaseline/>
         <div className={classes.root}>
           <Card className={classes.card}>
-            <Grid container spacing={2} className={classes.gridRow}>
+            <Grid container className={classes.gridRow}>
               {this.props.user ?
                 <React.Fragment>
                   <Grid item xs={5} sm={2} className={classes.gridCol}>
-                    <Typography component="p" variant="h6" color="textSecondary">
+                    <Typography component="p" variant="body1" color="textSecondary">
                       Преподаватель:
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={9}>
-                    <Typography component="p" variant="h5" color="textPrimary">
+                    <Typography component="p" variant="h6" color="textPrimary">
                       {this.props.user.displayName}
                     </Typography>
                   </Grid>
                 </React.Fragment>
                 : null
               }
+              <Grid item xs={5} sm={2} className={classes.gridCol}>
+                <Typography component="p" variant="body1" color="textSecondary">
+                  Тест:
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={9}>
+                <Typography component="p" variant="body1" color="textPrimary">
+                  {this.state.nameQuiz}
+                </Typography>
+              </Grid>
+
             </Grid>
           </Card>
           <MaterialTable
-            title="Тесты"
+            title="Список вопросов к тесту"
             icons={tableIcons}
             columns={this.state.columns}
             data={this.props.data}
@@ -152,25 +146,34 @@ class Account extends React.Component {
               pageSizeOptions: [5, 10, 20],
               headerStyle: {fontSize: 16, fontWeight: 600}
             }}
+            components={{
+              Toolbar: props => (
+                <div>
+                  <MTableToolbar {...props} />
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={()=>this.props.history.push(ACCOUNT)}
+                  >
+                    {"Обратно к списку тестов"}
+                  </Button>
+                </div>
+              ),
+            }}
             actions={[
               {
                 icon: ListAltIcon,
-                tooltip: 'Редактирование вопросов',
+                tooltip: 'Редактирование ответов',
                 onClick: (event, rowData) => {
-                  // console.log(rowData);
-                  this.props.history.push(EDIT_QUESTIONS_PATH + '/' + rowData.key);
+                  this.props.history.push(EDIT_ANSWERS_PATH + '/' + rowData.key);
                 }
-              },
-              rowData => ({
-                icon: ChevronRight,
-                tooltip: 'Изменить пароль доступа',
-                onClick: (event, rowData) => this.setState({open: true, rowData: rowData}),
-                disabled: rowData.access !== 1
-              })
+              }
             ]}
             localization={{
               body: {
-                emptyDataSourceMessage: 'Данных нет. Для добавления теста нажмите кнопку со знаком +',
+                emptyDataSourceMessage: 'Данных нет. Для добавления вопроса нажмите кнопку со знаком +',
                 addTooltip: 'Добавить новый тест',
                 deleteTooltip: 'Удалить',
                 editTooltip: 'Изменить',
@@ -178,7 +181,7 @@ class Account extends React.Component {
                   filterTooltip: 'Отфильтровать'
                 },
                 editRow: {
-                  deleteText: 'Вы уверены, что хотите удалить тест? Он будет удален безвозвратно!',
+                  deleteText: 'Вы уверены, что хотите удалить вопрос? Он будет удален безвозвратно!',
                   cancelTooltip: 'Отменить',
                   saveTooltip: 'ОК'
                 }
@@ -211,26 +214,26 @@ class Account extends React.Component {
                 exportTitle: 'Экспорт',
                 exportAriaLabel: 'Экспорт',
                 exportName: 'Экспорт в CSV',
-                searchTooltip: 'Поиск тестов по вхождению',
+                searchTooltip: 'Поиск вопросов по вхождению',
                 searchPlaceholder: 'Поиск'
               }
             }}
             editable={{
               onRowAdd: newData =>
                 new Promise(async (resolve) => {
-                  await this.props.addQuiz({...newData, access: parseInt(newData.access)});
+                  await this.props.addQuestion({...newData}, this.props.match.params.name);
                   resolve();
                 }),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve) => {
                   setTimeout(() => {
-                    this.props.setQuiz({...newData, access: parseInt(newData.access)}, oldData.tableData.id);
+                    this.props.setQuestion({...newData}, oldData.tableData.id);
                     resolve();
                   }, 0)
                 }),
               onRowDelete: oldData =>
                 new Promise(async (resolve) => {
-                  await this.props.delQuiz(oldData);
+                  await this.props.delQuestion(oldData);
                   resolve()
                 }),
             }}
@@ -239,41 +242,6 @@ class Account extends React.Component {
         <Box mt={5}>
           <Copyright/>
         </Box>
-        <Dialog open={this.state.open} onClose={() => this.setState({open: false})} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Изменить пароль</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Доступ к прохождению теста может быть ограничен паролем, который будет запрошен у пользователя.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="password"
-              label="Пароль"
-              type="password"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.setState({open: false})} color="primary">
-              Не хочу менять
-            </Button>
-            <Button onClick={() => {
-              let passw = document.getElementById("password");
-              // console.log(passw, passw.value, passw.target);
-              this.props.setQuiz({
-                  ...this.state.rowData,
-                  access: parseInt(this.state.rowData.access),
-                  tableData: null, password: passw.value
-                },
-                this.state.rowData.tableData.id);
-              this.setState({open: false})
-              }
-            } color="primary">
-              Изменить
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Container>
     );
   }
@@ -282,7 +250,8 @@ class Account extends React.Component {
 function mapStateToProps(state) {
   // console.log(state.listQuizes);
   return {
-    data: state.listQuizes,
+    listQuizes: state.listQuizes,
+    data: state.questions,
     user: state.user,
   }
 }
@@ -291,10 +260,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    addQuiz: (quiz) => dispatch(addQuiz(quiz)),
-    setQuiz: (quiz, index) => dispatch(setQuiz(quiz, index)),
-    delQuiz: (quiz) => dispatch(delQuiz(quiz)),
+    initQuestionsList: (key) => dispatch(initQuestionsList(key)),
+    addQuestion: (question, keyQuiz) => dispatch(addQuestion(question, keyQuiz)),
+    setQuestion: (question, index) => dispatch(setQuestion(question, index)),
+    delQuestion: (keyQuiz) => dispatch(delQuestion(keyQuiz)),
+    // delAllAnswersFromQuestion: (keyQuiz) => dispatch(delAllAnswersFromQuestion(keyQuiz))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Account))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(EditQuestions))

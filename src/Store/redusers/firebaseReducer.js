@@ -1,11 +1,23 @@
-import {ADD_QUIZ, DEL_QUIZ, SET_FIREBASE, SET_QUIZ} from "../actions/actionTypes";
+import {
+  ADD_ANSWERS,
+  ADD_QUESTIONS,
+  ADD_QUIZ, CLEAR_ANSWERS,
+  CLEAR_QUESTIONS, DEL_ANSWERS, DEL_QUESTIONS,
+  DEL_QUIZ, SET_ANSWERS,
+  SET_FIREBASE,
+  SET_QUESTIONS,
+  SET_QUIZ
+} from "../actions/actionTypes";
 
 const initialState = {
   db: null,           // база данных
   auth: null,         // параметр аутентификации пользователя
   error: null,
   user: null,
-  listQuizes: []
+  listQuizes: [],
+  questions: [],
+  answers: [],
+
 };
 
 
@@ -18,11 +30,8 @@ export default function firebaseReducer(state = initialState, action) {
       };
     }
     case ADD_QUIZ: {
-      // let listQuizes = [...state.listQuizes];
-      // console.log('listQuizes',listQuizes);
-      // listQuizes.push(action.quiz);
       return {
-        ...state //, listQuizes: [...listQuizes]
+        ...state
       };
     }
     case SET_QUIZ: {
@@ -38,6 +47,56 @@ export default function firebaseReducer(state = initialState, action) {
       return {
         ...state, listQuizes: [...listQuizes]
       }
+    }
+    case CLEAR_QUESTIONS: {
+      return {
+        ...state, questions: []
+      }
+    }
+    case ADD_QUESTIONS: {
+      return {
+        ...state
+      }
+    }
+    case SET_QUESTIONS: {
+      let questions = [...state.questions];
+      questions[action.payload.index] = action.payload.question;
+      return {
+        ...state, questions: [...questions]
+      };
+    }
+    case DEL_QUESTIONS: {
+      let questions = [...state.questions];
+      questions.splice(action.payload.index, 1);
+      return {
+        ...state, questions: [...questions]
+      }
+
+    }
+    case CLEAR_ANSWERS: {
+      return {
+        ...state, answers: []
+      }
+    }
+    case ADD_ANSWERS: {
+      return {
+        ...state
+      }
+    }
+    case SET_ANSWERS: {
+      let answers = [...state.answers];
+      answers[action.payload.index] = action.payload.answer;
+      return {
+        ...state, answers: [...answers]
+      };
+    }
+    case DEL_ANSWERS: {
+      let answers = [...state.answers];
+      answers.splice(action.payload.index, 1);
+      return {
+        ...state, answers: [...answers]
+      }
+
     }
     default :
       return state
