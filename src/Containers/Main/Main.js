@@ -4,8 +4,15 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 // import Card from '@material-ui/core/Card';
-import MaterialTable, {MTableToolbar} from 'material-table'
-// import Button from '@material-ui/core/Button';
+import MaterialTable from 'material-table'
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -25,6 +32,8 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
+import { TEST_PATH} from "../../Route/path";
+import {withRouter} from 'react-router-dom'
 // import {initAnswerList, addAnswer, delAnswer, setAnswer} from "../../Store/actions/rootActions";
 // import {getAllQuiz} from "../../Store/actions/quizFirebase";
 // import ListAltIcon from "@material-ui/icons/ListAlt";
@@ -54,6 +63,13 @@ const useStyles = theme => ({
   button: {
     margin: theme.spacing(0, 0, 2, 3),
 
+  },
+  tbody: {
+    // '> tr': {
+      border: 'none',
+      boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.75), 10px 10px 7px rgba(0, 0, 0, 0.22)",
+      margin: 20
+    // }
   }
 });
 
@@ -78,7 +94,7 @@ const tableIcons = {
 };
 
 
-class Main extends React.Component {
+class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -90,7 +106,9 @@ class Main extends React.Component {
             </Typography>
         },
       ],
-      data: null
+      open: false,
+      password: null,
+      key: ''
     }
   }
 
@@ -113,12 +131,19 @@ class Main extends React.Component {
                   pageSizeOptions: [5, 10, 20],
                   headerStyle: {fontSize: 16, fontWeight: 600},
                   // rowStyle: rowData => ({
-                  //   backgroundColor: (rowData.rightAnswer) ? '#6acc75' : '#FFF'
+                  //   fontSize: "25px",
+                  //   color: 'red'
                   // })
                 }}
                 onRowClick={((evt, selectedRow) => {
-                  // this.setState({selectedRow: selectedRow.tableData.id})
-                  // this.props.setAnswer({...selectedRow, rightAnswer: !selectedRow.rightAnswer, tableData:null}, selectedRow.tableData.id);
+                  if (selectedRow.access === 1) {
+                    this.setState({
+                      open: true,
+                      password: selectedRow.password ? selectedRow.password : '123456',
+                      key: selectedRow.key
+                    })
+                  } else
+                    this.props.history.push(TEST_PATH + '/' + selectedRow.key);
                 })}
                 localization={{
                   body: {
@@ -172,6 +197,39 @@ class Main extends React.Component {
             <Box mt={5}>
               <Copyright/>
             </Box>
+            <Dialog open={this.state.open} onClose={() => this.setState({open: false})} aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Пароль</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Доступ к прохождению теста ограничен паролем. Введите пароль для рпазблокировки теста.
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="password"
+                  label="Пароль"
+                  type="password"
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => this.setState({open: false})} color="primary">
+                  Не знаю пароль
+                </Button>
+                <Button onClick={() => {
+                  let passw = document.getElementById("password");
+                  this.setState({open: false});
+                  if (passw.value === this.state.password) {
+                    this.props.history.push(TEST_PATH + '/' + this.state.key);
+                  } else {
+                    alert('Пароль введен неправильный')
+                  }
+                  }
+                } color="primary">
+                  ОК
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Container>
         }
 
@@ -200,4 +258,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Main))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(withRouter(MainPage)))

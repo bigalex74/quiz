@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {initFirebase} from './Store/actions/rootActions';
 
 import Layout from "./Layout/Layout";
-import Main from "./Containers/Main/Main";
+import MainPage from "./Containers/Main/Main";
 import Account from "./Containers/Account/Account";
 import SignUp from "./Containers/Register/Register";
 import Test from "./Containers/Test/Test";
@@ -36,15 +36,14 @@ class App extends React.Component {
         <Layout>
           <div className={classes.App}>
             <Switch>
-              {/*<Route path={MAIN} exact component={Main}/>*/}
-              <Route path={ACCOUNT} exact component={Account}/>
-              <Route path={AUTH} exact component={SignUp}/>
-              <Route path={TEST} exact component={Test}/>
-              <Route path={EDIT_QUESTIONS} exact component={EditQuestions}/>
-              <Route path={EDIT_ANSWERS} exact component={EditAnswers}/>
+              <Route path={MAIN} exact component={MainPage}/>
+              <Route path={ACCOUNT}  component={Account}/>
+              <Route path={AUTH}  component={SignUp}/>
+              <Route path={TEST}  component={Test}/>
+              <Route path={EDIT_QUESTIONS}  component={EditQuestions}/>
+              <Route path={EDIT_ANSWERS}  component={EditAnswers}/>
               <Redirect to={MAIN}/>
             </Switch>
-            <Main/>
           </div>
         </Layout>
       </React.Fragment>
