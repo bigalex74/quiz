@@ -29,9 +29,7 @@ import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
 import {getAnswersFromQuestion, getQuestionsFromQuiz} from "../../Store/actions/rootActions";
-import {MAIN} from "../../Route/path";
-// import ListAltIcon from "@material-ui/icons/ListAlt";
-// import {EDIT_ANSWERS_PATH} from "../../Route/path";
+import {MAIN, RESULT} from "../../Route/path";
 
 const useStyles = theme => ({
   root: {
@@ -50,16 +48,22 @@ const useStyles = theme => ({
     flexDirection: 'column',
   },
   titleHead: {
+    marginLeft: theme.spacing(-1),
     color: theme.palette.primary.dark,
   },
+  wrapperDescription: {
+    margin: theme.spacing(-2, 3, 2, 2),
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   description: {
-    margin: theme.spacing(-2, 0, 2, 3)
+
   },
   gridCol: {
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(2),
   },
   button: {
-    margin: theme.spacing(0, 0, 2, 3),
+    margin: theme.spacing(0, 0, 2, 2),
 
   },
   circularProgress: {
@@ -115,7 +119,7 @@ class Test extends React.Component {
     this.state = {
       columns: [
         {
-          title: 'Ответ', field: 'name', render: rowData =>
+          title: 'Варианты ответов:', field: 'name', render: rowData =>
             <Typography component="p" variant="subtitle1">
               {rowData.name}
             </Typography>
@@ -231,20 +235,16 @@ class Test extends React.Component {
                     paging: false,
                     headerStyle: {fontSize: 16, fontWeight: 600},
                     rowStyle: rowData => {
-                      // console.log('rowData', rowData);
                       return {backgroundColor: (rowData.answerUser) ? '#6acc75' : '#FFF'}
                     }
                   }}
                   onRowClick={((evt, selectedRow) => {
-                    // this.setState({selectedRow: selectedRow.tableData.id})
                     let data = [...this.state.data];
                     let answerUser = data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser;
                     if ((this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
                       total += item.rightAnswer ? 1 : 0, 0) === 1)) {
                       data[this.state.indexCurrentQuestion].answers.forEach((item, index, obj) => {
-                        // if (index !== selectedRow.tableData.id) {
                         obj[index].answerUser = false
-                        // }
                       });
                     }
                     data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser = !answerUser;
@@ -258,10 +258,16 @@ class Test extends React.Component {
                         <div className={classes.titleHead}>
                           <MTableToolbar {...props}/>
                         </div>
-                        <Typography component="p" variant="body1" className={classes.description} color="textSecondary">
-                          {(this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
-                            total += item.rightAnswer ? 1 : 0, 0) === 1) ? 'Выберите один вариант ответа' : 'Выберите несколько вариантов ответа'}
-                        </Typography>
+                        <div className={classes.wrapperDescription}>
+                          <Typography component="p" variant="body1" className={classes.description} color="textSecondary">
+                            {(this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
+                              total += item.rightAnswer ? 1 : 0, 0) === 1) ? 'Выберите один вариант ответа' : 'Выберите несколько вариантов ответа'}
+                          </Typography>
+                          <Typography component="p" variant="body1" className={classes.description} color="textSecondary">
+                            {`${this.state.indexCurrentQuestion + 1} вопрос из ${this.state.data.length}`}
+                          </Typography>
+
+                        </div>
                         <Button
                           type="button"
                           variant="contained"
@@ -270,8 +276,10 @@ class Test extends React.Component {
                           disabled={!this.state.data[this.state.indexCurrentQuestion].answers.find(item => item.answerUser)}
                           onClick={() => {
                             if (this.state.indexCurrentQuestion === this.state.data.length - 1) {
-                              alert('aless');
-                              this.props.history.push(MAIN);
+                              this.props.history.push({
+                                pathname: RESULT,
+                                state: {data: this.state.data, quiz: this.state.nameQuiz}
+                              });
                             }
                             this.setState({
                               indexCurrentQuestion: this.state.indexCurrentQuestion + 1

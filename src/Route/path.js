@@ -3,6 +3,7 @@ export const ACCOUNT = "/account";
 
 export const TEST = "/test/:name";
 export const TEST_PATH = "/test";
+export const RESULT = "/result";
 
 export const EDIT_QUESTIONS = "/edit_questions/:name";
 export const EDIT_QUESTIONS_PATH = "/edit_questions";
