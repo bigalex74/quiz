@@ -12,6 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -64,12 +65,11 @@ const useStyles = theme => ({
     margin: theme.spacing(0, 0, 2, 3),
 
   },
-  tbody: {
-    // '> tr': {
-      border: 'none',
-      boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.75), 10px 10px 7px rgba(0, 0, 0, 0.22)",
-      margin: 20
-    // }
+  circularProgress: {
+    display: 'flex',
+    alignItems: "center",
+    justifyContent: 'center',
+    height: '100vh'
   }
 });
 
@@ -118,7 +118,9 @@ class MainPage extends React.Component {
     return (
       <div>
         {!this.props.data || this.props.loader ?
-          <p>Данные загружаются</p>
+          <div className={classes.circularProgress}>
+            <CircularProgress />
+          </div>
           : <Container component="main">
             <CssBaseline/>
             <div className={classes.root}>

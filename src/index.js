@@ -20,6 +20,7 @@ const store = createStore(firebaseReducer, composeEnhancers(applyMiddleware(
   thunk
 )));
 
+
 const Application = (
   <Provider store={store}>
     <BrowserRouter>

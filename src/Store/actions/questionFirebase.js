@@ -14,7 +14,7 @@ export function initQuestionsList(key) {
       dispatch(clearQuestionsList());
       console.log(3, getState());
       let questions = [];
-      ref.orderByChild("keyQuiz").equalTo(key).on("child_added", function(data) {
+      ref.orderByChild("keyQuiz").equalTo(key).on("child_added", function (data) {
         const dv = data.val();
         const dk = data.key;
         questions.push({...dv, key: dk});
@@ -36,24 +36,26 @@ export function addQuestion(question, keyQuiz) {
     })
   }
 }
+
 export function setQuestion(question, index) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       let {db} = getState();
       let key = question.key;
-      let ref = db.ref('questions/'+key);
+      let ref = db.ref('questions/' + key);
       ref.update({...question, key: null});
       dispatch(setQuestionsInList(question, index));
       resolve()
     })
   }
 }
+
 export function delQuestion(question) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       let {db} = getState();
       let key = question.key;
-      let ref = db.ref('questions/'+key);
+      let ref = db.ref('questions/' + key);
       ref.remove();
       dispatch(delAllAnswersFromQuestion(key));
       dispatch(delQuestionsInList(question.tableData.id));
@@ -61,18 +63,40 @@ export function delQuestion(question) {
     })
   }
 }
+
 export function delAllQuestionsFromQuiz(key) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       let {db} = getState();
       let ref = db.ref('questions');
-      ref.orderByChild("keyQuiz").equalTo(key).on("child_added", function(data) {
+      ref.orderByChild("keyQuiz").equalTo(key).on("child_added", function (data) {
         const dk = data.key;
-        let ref = db.ref('questions/'+dk);
+        let ref = db.ref('questions/' + dk);
         ref.remove();
         dispatch(delAllAnswersFromQuestion(dk));
       });
       resolve()
     })
+  }
+}
+
+export function getQuestionsFromQuiz(keyQuiz) {
+  return (dispatch, getState) => {
+    return new Promise(resolve => {
+      dispatch(clearQuestionsList());
+      let {db} = getState();
+      let ref = db.ref('questions');
+      let questions = [];
+      ref.orderByChild("keyQuiz").equalTo(keyQuiz).once("value").then(snapshot => {
+        // console.log(keyQuiz,snapshot, snapshot.val());
+        if (snapshot !== undefined && snapshot.val()) {
+          Object.entries(snapshot.val()).forEach((key) => {
+            questions.push({...key[1], key: key[0]})
+          });
+        }
+        dispatch(setFirebasse({questions: [...questions]}));
+        resolve();
+      });
+    });
   }
 }

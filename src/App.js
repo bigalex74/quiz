@@ -17,7 +17,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {isTeacher} from "./Store/helper";
 
 class App extends React.Component {
+  componentWillMount() {
+
+  }
   async componentDidMount() {
+
     // при старте приложения инициализируем бд в firebase
     await this.props.initFirebase();
     if (this.props.user !== null)
@@ -36,13 +40,14 @@ class App extends React.Component {
         <Layout>
           <div className={classes.App}>
             <Switch>
+
               <Route path={MAIN} exact component={MainPage}/>
               <Route path={ACCOUNT}  component={Account}/>
               <Route path={AUTH}  component={SignUp}/>
               <Route path={TEST}  component={Test}/>
               <Route path={EDIT_QUESTIONS}  component={EditQuestions}/>
               <Route path={EDIT_ANSWERS}  component={EditAnswers}/>
-              <Redirect to={MAIN}/>
+              <Redirect to='/'/>
             </Switch>
           </div>
         </Layout>
