@@ -150,7 +150,7 @@ class Test extends React.Component {
             {
               name: 'Среди предложенных вариантов нет правильного',
               rightAnswer: rightEmptyAnswer,
-              // answerUser: false
+              answerUser: false
             }]
         })
       }

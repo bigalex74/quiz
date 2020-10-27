@@ -1,4 +1,4 @@
-import {ACCOUNT, LOGIN, MAIN, REGISTER} from "./path";
+import {ACCOUNT, LOGIN, MAIN, MILLIONAIRE, REGISTER} from "./path";
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
@@ -31,6 +31,13 @@ export const Pages = [
     id: 'register',
     to: REGISTER,
     title: 'Зарегистрироваться',
+    exact: false,
+    icon: <PersonAddIcon/>
+  },
+  {
+    id: 'millionaire',
+    to: MILLIONAIRE,
+    title: 'Кто хочет стать миллионером',
     exact: false,
     icon: <PersonAddIcon/>
   },

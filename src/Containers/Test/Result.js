@@ -26,6 +26,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import Copyright from "../../Components/Copyright/copyright";
 // import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
@@ -43,15 +44,13 @@ const useStyles = theme => ({
   },
   card: {
     marginTop: theme.spacing(4),
-    height: theme.spacing(48),
-    display: 'flex',
-    justifyContent: "center",
-    flexDirection: 'column',
+    height: theme.spacing(58),
   },
   gridRow: {
-    display: 'flex',
-    alignItems: "center",
-    height: '100%'
+    padding: theme.spacing(2)
+  },
+  gridRow2: {
+    height: theme.spacing(30)
   },
   titleHead: {
     marginLeft: theme.spacing(-1),
@@ -66,7 +65,6 @@ const useStyles = theme => ({
     marginLeft: theme.spacing(2),
   },
   button: {
-    margin: theme.spacing(3, 0, 2, 2),
     width: '50%'
 
   },
@@ -97,6 +95,9 @@ const useStyles = theme => ({
   gridSpeedometr: {
     height: theme.spacing(10)
   },
+  paper: {
+    padding: theme.spacing(2)
+  }
   // gridRowSpidometr: {
   //   display: 'flex',
   //   alignItems: "center",
@@ -183,44 +184,82 @@ class Result extends React.Component {
             <CssBaseline/>
             <div className={classes.root}>
               <Card className={classes.card}>
-                <Grid container className={classes.gridRow}>
-                  <Grid item className={classes.gridCol}>
-                    <Typography component="p" variant="body1" color="textSecondary">
-                      Результат тестирования по теме:
-                    </Typography>
+                <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={3}
+                      className={classes.gridRow}>
+                  <Grid item>
+                    <Paper elevation={3} className={classes.paper}>
+                      <Typography component="p" variant="body1" color="textSecondary">
+                        Результат тестирования по теме:
+                      </Typography>
+                      <Typography component="p" variant="h5" color="primary">
+                        {this.state.nameQuiz}
+                      </Typography>
+                    </Paper>
                   </Grid>
-                  <Grid item className={classes.gridCol}>
-                    <Typography component="p" variant="h5" color="primary">
-                      {this.state.nameQuiz}
-                    </Typography>
+                  <Grid item>
+                    <Grid container spacing={2}>
+                      <Grid item xs={4}>
+                        <Paper elevation={3} className={[classes.paper, classes.gridRow2].join(' ')}>
+                          <ReactSpeedometer
+                            maxValue={100}
+                            minValue={0}
+                            ringWidth={47}
+                            paddingHorizontal={17}
+                            value={Math.round(this.state.countRightAnswer / (this.state.data.length / 100))}
+                            // eslint-disable-next-line
+                            currentValueText="${value}%"
+                            startColor="green"
+                            endColor="red"
+                            maxSegmentLabels={1}
+                            segments={5555}
+                            labelFontSize={'15px'}
+                            valueTextFontSize={'23px'}
+                            needleColor="steelblue"
+                            needleTransitionDuration={4000}
+                            needleTransition="easeElastic"
+                          />
+                        </Paper>
+                      </Grid>
+                      <Grid item xs>
+                        <Paper elevation={3} className={[classes.paper, classes.gridRow2].join(' ')}>
+                          <MaterialTable
+                            columns={[
+                              {title: 'Показатель', field: 'name'},
+                              {title: 'Значение', field: 'val'}
+                            ]}
+                            data={[
+                              {name: 'Количество баллов (правильных ответов)', val: this.state.countRightAnswer},
+                              {name: 'Максимально возможное количество баллов', val: this.state.data.length},
+                              {name: 'Процент', val: Math.round(this.state.countRightAnswer / (this.state.data.length / 100))},
+                            ]}
+                            options={{
+                              showTitle: false,
+                              toolbar: false,
+                              paging: false,
+                              headerStyle: {
+                                backgroundColor: '#ccc',
+                              }
+                            }}
+                          />
+                        </Paper>
+                      </Grid>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={5} sm={2} className={classes.gridSpeedometr}>
-                    <ReactSpeedometer
-                      maxValue={this.state.data.length}
-                      minValue={0}
-                      value={this.state.countRightAnswer}
-                      startColor="green"
-                      endColor="red"
-                      segments={this.state.data.length}
-                      width={200}
-                      height={250}
-                      needleColor="steelblue"
-                      needleTransitionDuration={4000}
-                      needleTransition="easeElastic"
-                    />
+                  <Grid item style={{margin: '0 auto'}}>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      color="primary"
+                      style={{height: '50px'}}
+                      onClick={() => {
+                        this.props.history.push(MAIN);
+                      }}
+                    >
+                      {"Вернуться к списку тестов"}
+                    </Button>
                   </Grid>
                 </Grid>
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  onClick={() => {
-                    this.props.history.push(MAIN);
-                  }}
-                >
-                  {"Вернуться к списку тестов"}
-                </Button>
+
               </Card>
               <MaterialTable
                 title="Правильность ответов на вопросы"
@@ -241,20 +280,6 @@ class Result extends React.Component {
                     return {color: (right) ? '#6acc75' : '#ff6c3c'}
                   }
                 }}
-                // onRowClick={((evt, selectedRow) => {
-                //   let data = [...this.state.data];
-                //   let answerUser = data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser;
-                //   if ((this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
-                //     total += item.rightAnswer ? 1 : 0, 0) === 1)) {
-                //     data[this.state.indexCurrentQuestion].answers.forEach((item, index, obj) => {
-                //       obj[index].answerUser = false
-                //     });
-                //   }
-                //   data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser = !answerUser;
-                //   this.setState({
-                //     data: data
-                //   });
-                // })}
                 components={{
                   Toolbar: props => (
                     <div>

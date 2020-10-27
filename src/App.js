@@ -12,8 +12,9 @@ import Test from "./Containers/Test/Test";
 import Result from './Containers/Test/Result';
 import EditQuestions from './Containers/Account/editQuestions';
 import EditAnswers from './Containers/Account/editAnswers';
+import Millionare from './Containers/Millionaire/App';
 
-import {ACCOUNT, MAIN, AUTH, TEST, LOGIN, EDIT_QUESTIONS, EDIT_ANSWERS, RESULT} from "./Route/path";
+import {ACCOUNT, MAIN, AUTH, TEST, LOGIN, EDIT_QUESTIONS, EDIT_ANSWERS, RESULT, MILLIONAIRE} from "./Route/path";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {isTeacher} from "./Store/helper";
 
@@ -49,6 +50,7 @@ class App extends React.Component {
               <Route path={RESULT} component={Result}/>
               <Route path={EDIT_QUESTIONS}  component={EditQuestions}/>
               <Route path={EDIT_ANSWERS}  component={EditAnswers}/>
+              <Route path={MILLIONAIRE}  component={Millionare}/>
               <Redirect to='/'/>
             </Switch>
           </div>
