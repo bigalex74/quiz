@@ -18,22 +18,27 @@ export function initFirebase() {
         appId: "1:1028821584667:web:70f1064583b68d084da1be"
       };
       // Initialize Firebase
-      dispatch(setLoader(true));
+      dispatch(setLoader(true));  // покажем лоадер
       const app = firebase.initializeApp(firebaseConfig);
       const auth = app.auth();
+      // занесем в стор данные по подключению  к firebase
       dispatch(setFirebasse({
         db: app.database(),
         auth: auth
       }));
+      // функция, которая сработает после того как произойдет аутентификация пользователя
       auth.onAuthStateChanged(async function(user) {
         if (user) {
+          // получили залогиненного пользователя. Занесем его в стор
           await dispatch(setFirebasse({user}));
           if (isTeacher(user.email))
+          // если данный пользователь - преподаватель, то обновим данные его личного кабинета
            await dispatch(initDataUser());
           else
+           // иначе, заполним список доступных тестов для прохождения
            await dispatch(getAllQuiz());
         }
-        dispatch(setLoader(false));
+        dispatch(setLoader(false));   // уберем лоадер
         resolve()
       });
 

@@ -68,10 +68,8 @@ const useStyles = makeStyles((theme) => ({
 
 // Главная панель для всех экранов
 const ApplicationBar = props => {
-  // console.log(props);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  // const [showUser, setUser] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -187,7 +185,6 @@ const ApplicationBar = props => {
 };
 
 function mapStateToProps(state) {
-  // console.log(state);
   return {
     user: state.user
   }

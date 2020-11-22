@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
+import {Provider} from 'react-redux';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {applyMiddleware, createStore, compose} from 'redux';
-import {Provider} from 'react-redux';
-// import rootReducer from './Store/redusers/rootReducer';
 import firebaseReducer from './Store/redusers/firebaseReducer';
 import thunk from 'redux-thunk';
 
@@ -24,9 +23,7 @@ const store = createStore(firebaseReducer, composeEnhancers(applyMiddleware(
 const Application = (
   <Provider store={store}>
     <BrowserRouter>
-
-            <App />
-
+       <App />
     </BrowserRouter>
   </Provider>
 );

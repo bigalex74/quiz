@@ -47,6 +47,9 @@ const useStyles = theme => ({
     justifyContent: "center",
     flexDirection: 'column',
   },
+  cardTable: {
+    width: '100%'
+  },
   titleHead: {
     marginLeft: theme.spacing(-1),
     color: theme.palette.primary.dark,
@@ -56,9 +59,7 @@ const useStyles = theme => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  description: {
-
-  },
+  description: {},
   gridCol: {
     marginLeft: theme.spacing(2),
   },
@@ -224,121 +225,127 @@ class Test extends React.Component {
                   </Grid>
                   {/*</Grid>*/}
                 </Card>
-                <MaterialTable
-                  title={this.state.data[this.state.indexCurrentQuestion].name}
-                  icons={tableIcons}
-                  columns={this.state.columns}
-                  data={this.state.data[this.state.indexCurrentQuestion].answers}
-                  options={{
-                    pageSizeOptions: [5],
-                    search: false,
-                    paging: false,
-                    headerStyle: {fontSize: 16, fontWeight: 600},
-                    rowStyle: rowData => {
-                      return {backgroundColor: (rowData.answerUser) ? '#6acc75' : '#FFF'}
-                    }
-                  }}
-                  onRowClick={((evt, selectedRow) => {
-                    let data = [...this.state.data];
-                    let answerUser = data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser;
-                    if ((this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
-                      total += item.rightAnswer ? 1 : 0, 0) === 1)) {
-                      data[this.state.indexCurrentQuestion].answers.forEach((item, index, obj) => {
-                        obj[index].answerUser = false
-                      });
-                    }
-                    data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser = !answerUser;
-                    this.setState({
-                      data: data
-                    });
-                  })}
-                  components={{
-                    Toolbar: props => (
-                      <div>
-                        <div className={classes.titleHead}>
-                          <MTableToolbar {...props}/>
-                        </div>
-                        <div className={classes.wrapperDescription}>
-                          <Typography component="p" variant="body1" className={classes.description} color="textSecondary">
-                            {(this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
-                              total += item.rightAnswer ? 1 : 0, 0) === 1) ? 'Выберите один вариант ответа' : 'Выберите несколько вариантов ответа'}
-                          </Typography>
-                          <Typography component="p" variant="body1" className={classes.description} color="textSecondary">
-                            {`${this.state.indexCurrentQuestion + 1} вопрос из ${this.state.data.length}`}
-                          </Typography>
-
-                        </div>
-                        <Button
-                          type="button"
-                          variant="contained"
-                          color="primary"
-                          className={classes.button}
-                          disabled={!this.state.data[this.state.indexCurrentQuestion].answers.find(item => item.answerUser)}
-                          onClick={() => {
-                            if (this.state.indexCurrentQuestion === this.state.data.length - 1) {
-                              this.props.history.push({
-                                pathname: RESULT,
-                                state: {data: this.state.data, quiz: this.state.nameQuiz}
-                              });
-                            }
-                            this.setState({
-                              indexCurrentQuestion: this.state.indexCurrentQuestion + 1
-                            })
-                          }}
-                        >
-                          {this.state.indexCurrentQuestion < this.state.data.length - 1 ? "Следующий вопрос" : "Завершить тестирование"}
-                        </Button>
-                      </div>
-                    ),
-                  }}
-                  localization={{
-                    body: {
-                      emptyDataSourceMessage: 'Данных нет. Для добавления ответа нажмите кнопку со знаком +',
-                      addTooltip: 'Добавить новый тест',
-                      deleteTooltip: 'Удалить',
-                      editTooltip: 'Изменить',
-                      filterRow: {
-                        filterTooltip: 'Отфильтровать'
-                      },
-                      editRow: {
-                        deleteText: 'Вы уверены, что хотите удалить ответ? Он будет удален безвозвратно!',
-                        cancelTooltip: 'Отменить',
-                        saveTooltip: 'ОК'
+                <Card className={classes.cardTable}>
+                  <MaterialTable
+                    title={this.state.data[this.state.indexCurrentQuestion].name}
+                    icons={tableIcons}
+                    columns={this.state.columns}
+                    data={this.state.data[this.state.indexCurrentQuestion].answers}
+                    options={{
+                      pageSizeOptions: [5],
+                      search: false,
+                      paging: false,
+                      headerStyle: {fontSize: 16, fontWeight: 600},
+                      rowStyle: rowData => {
+                        return {backgroundColor: (rowData.answerUser) ? '#6acc75' : '#FFF'}
                       }
-                    },
-                    grouping: {
-                      placeholder: 'Группировать ...',
-                      groupedBy: 'Группировка по:'
-                    },
-                    header: {
-                      actions: 'Действия'
-                    },
-                    pagination: {
-                      labelDisplayedRows: '{from}-{to} из {count}',
-                      labelRowsSelect: 'строк',
-                      labelRowsPerPage: 'строк на странице:',
-                      firstAriaLabel: 'Первая страница',
-                      firstTooltip: 'Перейти на первую страницу',
-                      previousAriaLabel: 'предыдущая страница',
-                      previousTooltip: 'Перейти на предыдущую страницу',
-                      nextAriaLabel: 'следующая страница',
-                      nextTooltip: 'Перейти на следующую страницу',
-                      lastAriaLabel: 'последняя страница',
-                      lastTooltip: 'Перейти на последнюю страницу'
-                    },
-                    toolbar: {
-                      addRemoveColumns: 'Spalten hinzufügen oder löschen',
-                      nRowsSelected: '{0} Ответ(ов) укзаны как правильные',
-                      showColumnsTitle: 'Zeige Spalten',
-                      showColumnsAriaLabel: 'Zeige Spalten',
-                      exportTitle: 'Экспорт',
-                      exportAriaLabel: 'Экспорт',
-                      exportName: 'Экспорт в CSV',
-                      searchTooltip: 'Поиск вопросов по вхождению',
-                      searchPlaceholder: 'Поиск'
-                    }
-                  }}
-                />
+                    }}
+                    onRowClick={((evt, selectedRow) => {
+                      let data = [...this.state.data];
+                      let answerUser = data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser;
+                      if ((this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
+                        total += item.rightAnswer ? 1 : 0, 0) === 1)) {
+                        data[this.state.indexCurrentQuestion].answers.forEach((item, index, obj) => {
+                          obj[index].answerUser = false
+                        });
+                      }
+                      data[this.state.indexCurrentQuestion].answers[selectedRow.tableData.id].answerUser = !answerUser;
+                      this.setState({
+                        data: data
+                      });
+                    })}
+                    components={{
+                      Toolbar: props => (
+                        <Grid container>
+                          <Grid item xs>
+                            <div className={classes.titleHead}>
+                              <MTableToolbar {...props}/>
+                            </div>
+                            <div className={classes.wrapperDescription}>
+                              <Typography component="p" variant="body1" className={classes.description}
+                                          color="textSecondary">
+                                {(this.state.data[this.state.indexCurrentQuestion].answers.reduce((total, item) =>
+                                  total += item.rightAnswer ? 1 : 0, 0) === 1) ? 'Выберите один вариант ответа' : 'Выберите несколько вариантов ответа'}
+                              </Typography>
+                              <Typography component="p" variant="body1" className={classes.description}
+                                          color="textSecondary">
+                                {`${this.state.indexCurrentQuestion + 1} вопрос из ${this.state.data.length}`}
+                              </Typography>
+
+                            </div>
+                            <Button
+                              type="button"
+                              variant="contained"
+                              color="primary"
+                              className={classes.button}
+                              disabled={!this.state.data[this.state.indexCurrentQuestion].answers.find(item => item.answerUser)}
+                              onClick={() => {
+                                if (this.state.indexCurrentQuestion === this.state.data.length - 1) {
+                                  this.props.history.push({
+                                    pathname: RESULT,
+                                    state: {data: this.state.data, quiz: this.state.nameQuiz}
+                                  });
+                                }
+                                this.setState({
+                                  indexCurrentQuestion: this.state.indexCurrentQuestion + 1
+                                })
+                              }}
+                            >
+                              {this.state.indexCurrentQuestion < this.state.data.length - 1 ? "Следующий вопрос" : "Завершить тестирование"}
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      ),
+                    }}
+                    localization={{
+                      body: {
+                        emptyDataSourceMessage: 'Данных нет. Для добавления ответа нажмите кнопку со знаком +',
+                        addTooltip: 'Добавить новый тест',
+                        deleteTooltip: 'Удалить',
+                        editTooltip: 'Изменить',
+                        filterRow: {
+                          filterTooltip: 'Отфильтровать'
+                        },
+                        editRow: {
+                          deleteText: 'Вы уверены, что хотите удалить ответ? Он будет удален безвозвратно!',
+                          cancelTooltip: 'Отменить',
+                          saveTooltip: 'ОК'
+                        }
+                      },
+                      grouping: {
+                        placeholder: 'Группировать ...',
+                        groupedBy: 'Группировка по:'
+                      },
+                      header: {
+                        actions: 'Действия'
+                      },
+                      pagination: {
+                        labelDisplayedRows: '{from}-{to} из {count}',
+                        labelRowsSelect: 'строк',
+                        labelRowsPerPage: 'строк на странице:',
+                        firstAriaLabel: 'Первая страница',
+                        firstTooltip: 'Перейти на первую страницу',
+                        previousAriaLabel: 'предыдущая страница',
+                        previousTooltip: 'Перейти на предыдущую страницу',
+                        nextAriaLabel: 'следующая страница',
+                        nextTooltip: 'Перейти на следующую страницу',
+                        lastAriaLabel: 'последняя страница',
+                        lastTooltip: 'Перейти на последнюю страницу'
+                      },
+                      toolbar: {
+                        addRemoveColumns: 'Spalten hinzufügen oder löschen',
+                        nRowsSelected: '{0} Ответ(ов) укзаны как правильные',
+                        showColumnsTitle: 'Zeige Spalten',
+                        showColumnsAriaLabel: 'Zeige Spalten',
+                        exportTitle: 'Экспорт',
+                        exportAriaLabel: 'Экспорт',
+                        exportName: 'Экспорт в CSV',
+                        searchTooltip: 'Поиск вопросов по вхождению',
+                        searchPlaceholder: 'Поиск'
+                      }
+                    }}
+                  />
+                </Card>
               </div>
               <Box mt={5}>
                 <Copyright/>
@@ -351,7 +358,6 @@ class Test extends React.Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.listQuizes);
   return {
     listQuizes: state.listQuizes,
     questions: state.questions,

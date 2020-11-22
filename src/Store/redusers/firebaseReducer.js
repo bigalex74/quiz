@@ -12,12 +12,12 @@ import {
 const initialState = {
   db: null,           // база данных
   auth: null,         // параметр аутентификации пользователя
-  error: null,
-  user: null,
-  listQuizes: [],
-  questions: [],
-  answers: [],
-  loader: false
+  error: null,        // наличие какой либо ошибки
+  user: null,         // пользователь, залогиненный в систему
+  listQuizes: [],     // список тестов
+  questions: [],      // список вопросов для теста
+  answers: [],        // список возможных ответов на вопрос
+  loader: false       // флаг загрузки данных
 
 };
 
@@ -25,13 +25,11 @@ const initialState = {
 export default function firebaseReducer(state = initialState, action) {
   switch (action.type) {
     case SET_FIREBASE: {
-      // console.log('action.params', action.params);
       return {
         ...state, ...action.params
       };
     }
     case SET_LOADER: {
-      // console.log('action.params', action.params);
       return {
         ...state, loader: action.params
       };

@@ -28,11 +28,10 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Copyright from "../../Components/Copyright/copyright";
-// import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
-// import {getAnswersFromQuestion, getQuestionsFromQuiz} from "../../Store/actions/rootActions";
 import {MAIN} from "../../Route/path";
 
+// Описание стилей
 const useStyles = theme => ({
   root: {
     display: 'flex',
@@ -98,12 +97,9 @@ const useStyles = theme => ({
   paper: {
     padding: theme.spacing(2)
   }
-  // gridRowSpidometr: {
-  //   display: 'flex',
-  //   alignItems: "center",
-  // }
 });
 
+// Описание иконок для таблицы
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref}/>),
@@ -124,11 +120,12 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>)
 };
 
-
+// Компонент вывода результата прохождения теста
 class Result extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // описание колонок таблицы
       columns: [
         {
           title: 'Вопросы:', field: 'name', render: rowData =>
@@ -143,11 +140,12 @@ class Result extends React.Component {
       loading: false
     }
   }
-
+  // при первом появлении таблицы
   componentDidMount() {
     this.setState({
       loading: true
     });
+    // подсчитаем количество правильных ответов для отображения на спидометре
     let count = 0;
     this.props.location.state.data.forEach(question => {
       let right = true;
@@ -158,12 +156,12 @@ class Result extends React.Component {
       });
       count += right ? 1 : 0;
     });
+    // в данный компонент передаются пропсы с наименованием теста и всеми данными прохождения этого теста
     this.setState({
       data: this.props.location.state.data,
       nameQuiz: this.props.location.state.quiz,
       countRightAnswer: count
     });
-    console.log(this.state);
     this.setState({
       loading: false
     });
@@ -198,18 +196,19 @@ class Result extends React.Component {
                   </Grid>
                   <Grid item>
                     <Grid container spacing={2}>
-                      <Grid item xs={4}>
+                      <Grid item xl={4} sm={false}>
                         <Paper elevation={3} className={[classes.paper, classes.gridRow2].join(' ')}>
+                          <div style={{width:'90%', height: '100%'}}>
                           <ReactSpeedometer
                             maxValue={100}
                             minValue={0}
                             ringWidth={47}
                             paddingHorizontal={17}
+                            fluidWidth={true}
                             value={Math.round(this.state.countRightAnswer / (this.state.data.length / 100))}
-                            // eslint-disable-next-line
                             currentValueText="${value}%"
-                            startColor="green"
-                            endColor="red"
+                            startColor="red"
+                            endColor="green"
                             maxSegmentLabels={1}
                             segments={5555}
                             labelFontSize={'15px'}
@@ -218,6 +217,7 @@ class Result extends React.Component {
                             needleTransitionDuration={4000}
                             needleTransition="easeElastic"
                           />
+                          </div>
                         </Paper>
                       </Grid>
                       <Grid item xs>
@@ -348,24 +348,4 @@ class Result extends React.Component {
   }
 }
 
-//
-// function mapStateToProps(state) {
-//   // console.log(state.listQuizes);
-//   return {
-//     listQuizes: state.listQuizes,
-//     questions: state.questions,
-//     answers: state.answers,
-//     user: state.user,
-//   }
-// }
-//
-//
-// function mapDispatchToProps(dispatch) {
-//
-//   return {
-//     getAnswersFromQuestion: (keyQuestion) => dispatch(getAnswersFromQuestion(keyQuestion)),
-//     getQuestionsFromQuiz: (keyQuiz) => dispatch(getQuestionsFromQuiz(keyQuiz))
-//   }
-// }
-// connect(mapStateToProps, mapDispatchToProps)
 export default withStyles(useStyles)(Result)

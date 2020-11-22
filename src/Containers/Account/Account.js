@@ -51,6 +51,9 @@ const useStyles = theme => ({
     marginTop: theme.spacing(4),
     height: theme.spacing(16),
   },
+  cardTable:{
+    width: '100%'
+  },
   gridRow: {
     display: 'flex',
     alignItems: "center",
@@ -143,98 +146,100 @@ class Account extends React.Component {
               }
             </Grid>
           </Card>
-          <MaterialTable
-            title="Тесты"
-            icons={tableIcons}
-            columns={this.state.columns}
-            data={this.props.data}
-            options={{
-              pageSizeOptions: [5, 10, 20],
-              headerStyle: {fontSize: 16, fontWeight: 600}
-            }}
-            actions={[
-              {
-                icon: ListAltIcon,
-                tooltip: 'Редактирование вопросов',
-                onClick: (event, rowData) => {
-                  // console.log(rowData);
-                  this.props.history.push(EDIT_QUESTIONS_PATH + '/' + rowData.key);
-                }
-              },
-              rowData => ({
-                icon: ChevronRight,
-                tooltip: 'Изменить пароль доступа',
-                onClick: (event, rowData) => this.setState({open: true, rowData: rowData}),
-                disabled: rowData.access !== 1
-              })
-            ]}
-            localization={{
-              body: {
-                emptyDataSourceMessage: 'Данных нет. Для добавления теста нажмите кнопку со знаком +',
-                addTooltip: 'Добавить новый тест',
-                deleteTooltip: 'Удалить',
-                editTooltip: 'Изменить',
-                filterRow: {
-                  filterTooltip: 'Отфильтровать'
+          <Card className={classes.cardTable}>
+            <MaterialTable
+              title="Тесты"
+              icons={tableIcons}
+              columns={this.state.columns}
+              data={this.props.data}
+              options={{
+                pageSizeOptions: [5, 10, 20],
+                headerStyle: {fontSize: 16, fontWeight: 600}
+              }}
+              actions={[
+                {
+                  icon: ListAltIcon,
+                  tooltip: 'Редактирование вопросов',
+                  onClick: (event, rowData) => {
+                    // console.log(rowData);
+                    this.props.history.push(EDIT_QUESTIONS_PATH + '/' + rowData.key);
+                  }
                 },
-                editRow: {
-                  deleteText: 'Вы уверены, что хотите удалить тест? Он будет удален безвозвратно!',
-                  cancelTooltip: 'Отменить',
-                  saveTooltip: 'ОК'
+                rowData => ({
+                  icon: ChevronRight,
+                  tooltip: 'Изменить пароль доступа',
+                  onClick: (event, rowData) => this.setState({open: true, rowData: rowData}),
+                  disabled: rowData.access !== 1
+                })
+              ]}
+              localization={{
+                body: {
+                  emptyDataSourceMessage: 'Данных нет. Для добавления теста нажмите кнопку со знаком +',
+                  addTooltip: 'Добавить новый тест',
+                  deleteTooltip: 'Удалить',
+                  editTooltip: 'Изменить',
+                  filterRow: {
+                    filterTooltip: 'Отфильтровать'
+                  },
+                  editRow: {
+                    deleteText: 'Вы уверены, что хотите удалить тест? Он будет удален безвозвратно!',
+                    cancelTooltip: 'Отменить',
+                    saveTooltip: 'ОК'
+                  }
+                },
+                grouping: {
+                  placeholder: 'Группировать ...',
+                  groupedBy: 'Группировка по:'
+                },
+                header: {
+                  actions: 'Действия'
+                },
+                pagination: {
+                  labelDisplayedRows: '{from}-{to} из {count}',
+                  labelRowsSelect: 'строк',
+                  labelRowsPerPage: 'строк на странице:',
+                  firstAriaLabel: 'Первая страница',
+                  firstTooltip: 'Перейти на первую страницу',
+                  previousAriaLabel: 'предыдущая страница',
+                  previousTooltip: 'Перейти на предыдущую страницу',
+                  nextAriaLabel: 'следующая страница',
+                  nextTooltip: 'Перейти на следующую страницу',
+                  lastAriaLabel: 'последняя страница',
+                  lastTooltip: 'Перейти на последнюю страницу'
+                },
+                toolbar: {
+                  addRemoveColumns: 'Spalten hinzufügen oder löschen',
+                  nRowsSelected: '{0} Zeile(n) ausgewählt',
+                  showColumnsTitle: 'Zeige Spalten',
+                  showColumnsAriaLabel: 'Zeige Spalten',
+                  exportTitle: 'Экспорт',
+                  exportAriaLabel: 'Экспорт',
+                  exportName: 'Экспорт в CSV',
+                  searchTooltip: 'Поиск тестов по вхождению',
+                  searchPlaceholder: 'Поиск'
                 }
-              },
-              grouping: {
-                placeholder: 'Группировать ...',
-                groupedBy: 'Группировка по:'
-              },
-              header: {
-                actions: 'Действия'
-              },
-              pagination: {
-                labelDisplayedRows: '{from}-{to} из {count}',
-                labelRowsSelect: 'строк',
-                labelRowsPerPage: 'строк на странице:',
-                firstAriaLabel: 'Первая страница',
-                firstTooltip: 'Перейти на первую страницу',
-                previousAriaLabel: 'предыдущая страница',
-                previousTooltip: 'Перейти на предыдущую страницу',
-                nextAriaLabel: 'следующая страница',
-                nextTooltip: 'Перейти на следующую страницу',
-                lastAriaLabel: 'последняя страница',
-                lastTooltip: 'Перейти на последнюю страницу'
-              },
-              toolbar: {
-                addRemoveColumns: 'Spalten hinzufügen oder löschen',
-                nRowsSelected: '{0} Zeile(n) ausgewählt',
-                showColumnsTitle: 'Zeige Spalten',
-                showColumnsAriaLabel: 'Zeige Spalten',
-                exportTitle: 'Экспорт',
-                exportAriaLabel: 'Экспорт',
-                exportName: 'Экспорт в CSV',
-                searchTooltip: 'Поиск тестов по вхождению',
-                searchPlaceholder: 'Поиск'
-              }
-            }}
-            editable={{
-              onRowAdd: newData =>
-                new Promise(async (resolve) => {
-                  await this.props.addQuiz({...newData, access: parseInt(newData.access)});
-                  resolve();
-                }),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    this.props.setQuiz({...newData, access: parseInt(newData.access)}, oldData.tableData.id);
+              }}
+              editable={{
+                onRowAdd: newData =>
+                  new Promise(async (resolve) => {
+                    await this.props.addQuiz({...newData, access: parseInt(newData.access)});
                     resolve();
-                  }, 0)
-                }),
-              onRowDelete: oldData =>
-                new Promise(async (resolve) => {
-                  await this.props.delQuiz(oldData);
-                  resolve()
-                }),
-            }}
-          />
+                  }),
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve) => {
+                    setTimeout(() => {
+                      this.props.setQuiz({...newData, access: parseInt(newData.access)}, oldData.tableData.id);
+                      resolve();
+                    }, 0)
+                  }),
+                onRowDelete: oldData =>
+                  new Promise(async (resolve) => {
+                    await this.props.delQuiz(oldData);
+                    resolve()
+                  }),
+              }}
+            />
+          </Card>
         </div>
         <Box mt={5}>
           <Copyright/>
@@ -268,7 +273,7 @@ class Account extends React.Component {
                 },
                 this.state.rowData.tableData.id);
               this.setState({open: false})
-              }
+            }
             } color="primary">
               Изменить
             </Button>
