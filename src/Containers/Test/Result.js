@@ -134,13 +134,13 @@ class Result extends React.Component {
             </Typography>
         },
       ],
-      data: [],
-      nameQuiz: '',
-      countRightAnswer: 0,
-      loading: false
+      data: [],               // данные тестирования
+      nameQuiz: '',           // наименование теста
+      countRightAnswer: 0,    // количество правильных ответов
+      loading: false          // флаг загруженности системы
     }
   }
-  // при первом появлении таблицы
+  // при первом появлении страницы
   componentDidMount() {
     this.setState({
       loading: true
@@ -206,6 +206,7 @@ class Result extends React.Component {
                             paddingHorizontal={17}
                             fluidWidth={true}
                             value={Math.round(this.state.countRightAnswer / (this.state.data.length / 100))}
+                            // eslint-disable-next-line
                             currentValueText="${value}%"
                             startColor="red"
                             endColor="green"
@@ -269,15 +270,15 @@ class Result extends React.Component {
                 options={{
                   pageSizeOptions: [5, 10, 20],
                   headerStyle: {fontSize: 16, fontWeight: 600},
-                  rowStyle: rowData => {
-                    let answers = rowData.answers;
+                  rowStyle: rowData => {                              // если в данных ответы преподавателя и ответы пользователя
+                    let answers = rowData.answers;                    // полностью совпадают
                     let right = true;
                     answers.forEach(item => {
                       if (item.answerUser !== item.rightAnswer) {
                         right = false
                       }
                     });
-                    return {color: (right) ? '#6acc75' : '#ff6c3c'}
+                    return {color: (right) ? '#6acc75' : '#ff6c3c'}   // покрасим вопрос в зеленый цвет, иначе в красный
                   }
                 }}
                 components={{
@@ -289,7 +290,7 @@ class Result extends React.Component {
                     </div>
                   ),
                 }}
-                localization={{
+                localization={{             // перевод сообщений
                   body: {
                     emptyDataSourceMessage: 'Данных нет. Для добавления ответа нажмите кнопку со знаком +',
                     addTooltip: 'Добавить новый тест',
@@ -325,10 +326,6 @@ class Result extends React.Component {
                     lastTooltip: 'Перейти на последнюю страницу'
                   },
                   toolbar: {
-                    addRemoveColumns: 'Spalten hinzufügen oder löschen',
-                    nRowsSelected: '{0} Ответ(ов) укзаны как правильные',
-                    showColumnsTitle: 'Zeige Spalten',
-                    showColumnsAriaLabel: 'Zeige Spalten',
                     exportTitle: 'Экспорт',
                     exportAriaLabel: 'Экспорт',
                     exportName: 'Экспорт в CSV',

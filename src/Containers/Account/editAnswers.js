@@ -26,8 +26,6 @@ import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
 import {initAnswerList, addAnswer, delAnswer, setAnswer} from "../../Store/actions/rootActions";
-// import ListAltIcon from "@material-ui/icons/ListAlt";
-// import {EDIT_ANSWERS_PATH} from "../../Route/path";
 
 const useStyles = theme => ({
   root: {
@@ -77,7 +75,7 @@ const tableIcons = {
 };
 
 
-class EditQuestions extends React.Component {
+  class EditAnswers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -165,7 +163,6 @@ class EditQuestions extends React.Component {
               })
             }}
             onRowClick={((evt, selectedRow) => {
-              // this.setState({selectedRow: selectedRow.tableData.id})
               this.props.setAnswer({...selectedRow, rightAnswer: !selectedRow.rightAnswer, tableData:null}, selectedRow.tableData.id);
             })}
             components={{
@@ -262,12 +259,11 @@ class EditQuestions extends React.Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.listQuizes);
   return {
-    listQuizes: state.listQuizes,
-    questions: state.questions,
-    data: state.answers,
-    user: state.user,
+    listQuizes: state.listQuizes,   // список тестов
+    questions: state.questions,     // список вопросов
+    data: state.answers,            // список ответов
+    user: state.user,               // пользователь
   }
 }
 
@@ -275,11 +271,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    initAnswerList: (key) => dispatch(initAnswerList(key)),
-    addAnswer: (answer, keyQuestion) => dispatch(addAnswer(answer, keyQuestion)),
-    setAnswer: (answer, index) => dispatch(setAnswer(answer, index)),
-    delAnswer: (keyQuiz) => dispatch(delAnswer(keyQuiz))
+    initAnswerList: (key) => dispatch(initAnswerList(key)),                         // инициализация списка ответов
+    addAnswer: (answer, keyQuestion) => dispatch(addAnswer(answer, keyQuestion)),   // добавить ответ
+    setAnswer: (answer, index) => dispatch(setAnswer(answer, index)),               // редактировать ответ
+    delAnswer: (keyQuiz) => dispatch(delAnswer(keyQuiz))                            // удалить ответ
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(EditQuestions))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(EditAnswers))

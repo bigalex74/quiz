@@ -118,7 +118,7 @@ class Test extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: [
+      columns: [              // Заголовки таблицы
         {
           title: 'Варианты ответов:', field: 'name', render: rowData =>
             <Typography component="p" variant="subtitle1">
@@ -126,13 +126,13 @@ class Test extends React.Component {
             </Typography>
         },
       ],
-      nameQuiz: '',
-      data: [],
-      indexCurrentQuestion: 0,
-      loader: false
+      nameQuiz: '',             // Наименование теста
+      data: [],                 // Данные теста
+      indexCurrentQuestion: 0,  // Текущий вопрос теста
+      loader: false             // Флаг занятости системы
     }
   }
-
+  // при старте страницы
   async componentDidMount() {
     this.setState({
       loader: true
@@ -141,14 +141,14 @@ class Test extends React.Component {
     let data = [];
     for (const question of this.props.questions) {            // пробежимся по всем вопросам теста
       await this.props.getAnswersFromQuestion(question.key);    // получим для каждого вопроса список вариантов ответа
-      if (this.props.answers.length > 0) {
-        let answers = [...this.props.answers];
-        answers.forEach(item => item.answerUser = false);
-        let rightEmptyAnswer = answers.findIndex(item => item.rightAnswer) === -1;
+      if (this.props.answers.length > 0) {                    // если на данный вопрос есть хотя бы один вариант ответа, продолжаем, иначе, данный вопрос будет проигнорирован
+        let answers = [...this.props.answers];                // получим список ответов на данный вопрос
+        answers.forEach(item => item.answerUser = false);     // проинициализируем все пользовательские ответы, как отрицательные
+        let rightEmptyAnswer = answers.findIndex(item => item.rightAnswer) === -1;  // если при создании теста не был выбран правильный ответ
         data.push({
           ...question,
           answers: [...this.props.answers,
-            {
+            {                                                       // к каждому вопросу добавим вариант еще один вариант ответа
               name: 'Среди предложенных вариантов нет правильного',
               rightAnswer: rightEmptyAnswer,
               answerUser: false
@@ -156,12 +156,12 @@ class Test extends React.Component {
         })
       }
     }
+    // обновим стейт полученными данными
     this.setState({
       indexCurrentQuestion: 0,
       data: data,
       nameQuiz: this.props.listQuizes.find(item => item.key === this.props.match.params.name).name
     });
-    console.log('data', this.state.data);
     this.setState({
       loader: false
     });
@@ -212,7 +212,6 @@ class Test extends React.Component {
               <CssBaseline/>
               <div className={classes.root}>
                 <Card className={classes.card}>
-                  {/*<Grid container className={classes.gridRow}>*/}
                   <Grid item className={classes.gridCol}>
                     <Typography component="p" variant="body1" color="textSecondary">
                       Тестирование на тему:
@@ -223,7 +222,6 @@ class Test extends React.Component {
                       {this.state.nameQuiz}
                     </Typography>
                   </Grid>
-                  {/*</Grid>*/}
                 </Card>
                 <Card className={classes.cardTable}>
                   <MaterialTable
@@ -359,10 +357,10 @@ class Test extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    listQuizes: state.listQuizes,
-    questions: state.questions,
-    answers: state.answers,
-    user: state.user,
+    listQuizes: state.listQuizes,     // список тестов
+    questions: state.questions,       // список вопросов
+    answers: state.answers,           // список ответов
+    user: state.user,                 // пользователь
   }
 }
 
@@ -370,8 +368,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    getAnswersFromQuestion: (keyQuestion) => dispatch(getAnswersFromQuestion(keyQuestion)),
-    getQuestionsFromQuiz: (keyQuiz) => dispatch(getQuestionsFromQuiz(keyQuiz))
+    getAnswersFromQuestion: (keyQuestion) => dispatch(getAnswersFromQuestion(keyQuestion)),   // Получение всех ответов по ключу вопроса
+    getQuestionsFromQuiz: (keyQuiz) => dispatch(getQuestionsFromQuiz(keyQuiz))                // Получение всех вопросов по ключу теста
   }
 }
 

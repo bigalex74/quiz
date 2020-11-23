@@ -49,42 +49,42 @@ class SignUp extends React.Component{
   constructor(props) {
     super(props);
     // привяжем намертво контекст
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.typeAuth = this.props.match.params.name;
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      message: {},
-      showDialog: false,
-      redirect: false
+    this.handleInputChange = this.handleInputChange.bind(this); // можно было воспользоваться стрелочной ф-ей. Это чисто в учебных целях
+    this.typeAuth = this.props.match.params.name; // тип аутентификации - вход или регистрация
+    this.state = {              // стейт компонента
+      firstName: '',              // имя
+      lastName: '',               // фамилия
+      email: '',                  // е-mail
+      password: '',               // пароль
+      message: {},                // сообщение (либо ок, либо ошибка)
+      showDialog: false,          // флаг показа диалогового окна
+      redirect: false             // флаг, можно ли нам покинуть эту страницу
     }
   }
-  // componentDidMount() {
-  //   this.typeAuth = this.props.match.params.name;
-  // }
 
+  // если пользователь ткнул на ссылку под полем ввода пароля (там мы предлагаем ему сменить тип аутентификации)
   componentWillReceiveProps(nextProps, nextState) {
-    this.typeAuth = nextProps.match.params.name;
+    this.typeAuth = nextProps.match.params.name;    // меняем тип аутентификации
     if (nextState.password !== '')
       this.setState({
-        password: ''
+        password: ''                                // стираем пароль
       });
   }
 
+  // при вводе с клавиатуры, сразу обновляем соответствующие значения в стейте
   handleInputChange(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
   }
 
+  // при нажатии на кнопку 'Зарегистрироваться'/'Войти'
   async onClickHandle() {
-    let title = 'Ошибка ';
+    let title = 'Ошибка ';                  // заголовок ошибки
     try {
-      if (this.typeAuth === 'reg') {
-        title += 'регистрации';
-        await this.props.signUpFirebase(
+      if (this.typeAuth === 'reg') {        // в зависимости от типа аутентификации
+        title += 'регистрации';             // меняем заголовок ошибки
+        await this.props.signUpFirebase(    // запрос на регистрацию нового пользователя в firebase
           this.state.firstName,
           this.state.lastName,
           this.state.email,
@@ -92,16 +92,16 @@ class SignUp extends React.Component{
         );
 
       } else {
-        title += 'аутентификации';
-        await this.props.signInFirebase(
+        title += 'аутентификации';            // меняем заголовок ошибки
+        await this.props.signInFirebase(      // запрос на вход зарегистрированного пользователя в firebase
           this.state.email,
           this.state.password
         )
       }
-      this.setState({
-        showDialog: true,
-        redirect: true,
-        message: {
+      this.setState({                           // если все отработало штатно и мы не получаем исключений
+        showDialog: true,                       // покажем приветственное окно
+        redirect: true,                         // после которого перейдем на другую станицу
+        message: {                              // сообщение, которое покажем пользователю
           title: `Уважаемый, ${this.props.user.displayName}`,
           message: 'Добро пожаловать в систему прохождения тестов. Очень надеюсь вам понравиться!!!',
         }
@@ -109,36 +109,38 @@ class SignUp extends React.Component{
       // На этом этапе пользователь аутентифицировался, либо зарегистрировался
       // можем загрузить из бд все данные пока он вдупляет на окно приветсвия и ищет кнопку ОК
 
-    } catch (e) {
+    } catch (e) {                                // если при аутентификации произошла ошибка
       this.setState({
-        showDialog: true,
-        redirect: false,
-        message: {...e, title},
+        showDialog: true,                        // покажем ее пользователю
+        redirect: false,                         // запрет на покидание этой страницы
+        message: {...e, title},                  // сообщение, которое покажем пользователю
       })
     }
-
   }
+
+  // при показе окна с сообщением для пользователя была нажата кнопка ОК
   handleCloseDialog() {
     this.setState({
-      showDialog: false
+      showDialog: false                           // уберем окно с экрана
     });
-    if (this.state.redirect) {
-      if (isTeacher(this.props.user.email))
+    if (this.state.redirect) {                    // если это приветственное окно об удачной аутентификации и нам разрешено закрыть эту страницк
+      if (isTeacher(this.props.user.email))       // если это преподаватель, переходим в его личный кабинет
         this.props.history.push(ACCOUNT);
       else
-        this.props.history.push(MAIN);
+        this.props.history.push(MAIN);            // если это студент, идем на главную страницу
     }
   };
 
+  // функция блокировки/разблокировки кнопки аутентификации в зависимости от введенных значений в поля формы
   enableButton() {
-    if (this.typeAuth === 'reg') {
+    if (this.typeAuth === 'reg') {        // если это регистрация, то должны быть заполнены все поля
       return (
         this.state.firstName !== '' &&
         this.state.lastName !== '' &&
         this.state.email !== '' &&
         this.state.password !== ''
       )
-    } else {
+    } else {                              // если это обычный вход, то должны быть заполнены e-mail и пароль
       return (
         this.state.email !== '' &&
         this.state.password !== ''
@@ -163,17 +165,17 @@ class SignUp extends React.Component{
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="fname"
-                  name="firstName"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Имя"
-                  autoFocus
-                  disabled={this.typeAuth === 'log'}
-                  value={this.state.firstName}
-                  onChange={this.handleInputChange}
+                  autoComplete="fname"                  // есть ли функция автозаполнения
+                  name="firstName"                      // наименование поля
+                  variant="outlined"                    // вариант представления. Здесь с рамкой
+                  required                              // флаг, поле обязательно для заполнения
+                  fullWidth                             // флаг, что поле будет занимать всю длину родителя
+                  id="firstName"                        // идентификатор поля
+                  label="Имя"                           // заголовок поля
+                  autoFocus                             // флаг, что поле имеет автофокус
+                  disabled={this.typeAuth === 'log'}    // поле заблокировано, если ип аутентификации не регистрация
+                  value={this.state.firstName}          // значение поля
+                  onChange={this.handleInputChange}     // функция, которая будет вызваапри вводе с клавиатуры
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -269,16 +271,15 @@ class SignUp extends React.Component{
 
 function mapStateToProps(state) {
   return {
-    error: state.error,
-    user: state.user
+    error: state.error,     // ошибка
+    user: state.user        // зарегистрированный пользователь
   }
 }
 
-
 function mapDispatchToProps(dispatch) {
   return {
-    signUpFirebase: (name, lname, email, password) => dispatch(signUp(name, lname, email, password)),
-    signInFirebase: (email, password) => dispatch(signIn(email, password))
+    signUpFirebase: (name, lname, email, password) => dispatch(signUp(name, lname, email, password)), // регистрация нового пользователя
+    signInFirebase: (email, password) => dispatch(signIn(email, password))  // вход зарегистрированного пользователя
   }
 }
 

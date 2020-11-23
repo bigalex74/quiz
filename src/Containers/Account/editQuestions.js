@@ -248,11 +248,10 @@ class EditQuestions extends React.Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.listQuizes);
   return {
-    listQuizes: state.listQuizes,
-    data: state.questions,
-    user: state.user,
+    listQuizes: state.listQuizes,   // список тестов
+    data: state.questions,          // список вопросов
+    user: state.user,               // пользователь
   }
 }
 
@@ -260,11 +259,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    initQuestionsList: (key) => dispatch(initQuestionsList(key)),
-    addQuestion: (question, keyQuiz) => dispatch(addQuestion(question, keyQuiz)),
-    setQuestion: (question, index) => dispatch(setQuestion(question, index)),
-    delQuestion: (keyQuiz) => dispatch(delQuestion(keyQuiz)),
-    // delAllAnswersFromQuestion: (keyQuiz) => dispatch(delAllAnswersFromQuestion(keyQuiz))
+    initQuestionsList: (key) => dispatch(initQuestionsList(key)),                   // инициализация списка вопросов теста
+    addQuestion: (question, keyQuiz) => dispatch(addQuestion(question, keyQuiz)),   // добавить вопрос
+    setQuestion: (question, index) => dispatch(setQuestion(question, index)),       // редактировать вопрос
+    delQuestion: (keyQuiz) => dispatch(delQuestion(keyQuiz)),                       // удалить вопрос
   }
 }
 

@@ -1,5 +1,4 @@
 import React, {forwardRef} from 'react';
-// import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -31,6 +30,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import ListAltIcon from '@material-ui/icons/ListAlt';
+
 import Grid from '@material-ui/core/Grid';
 import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
@@ -89,7 +89,7 @@ class Account extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: [
+      columns: [            // Заголовки колонок таблицы
         {
           title: 'Наименование теста', field: 'name', render: rowData =>
             <Typography component="p" variant="subtitle1">
@@ -116,8 +116,8 @@ class Account extends React.Component {
           align: 'right'
         },
       ],
-      open: false,
-      rowData: null
+      open: false,        // отвечает за видимость модального окна - нужно, чтобы ввести пароль видимости теста
+      rowData: null       // данные, которые мы видим в таблице
     }
   }
 
@@ -148,31 +148,30 @@ class Account extends React.Component {
           </Card>
           <Card className={classes.cardTable}>
             <MaterialTable
-              title="Тесты"
-              icons={tableIcons}
-              columns={this.state.columns}
-              data={this.props.data}
-              options={{
-                pageSizeOptions: [5, 10, 20],
-                headerStyle: {fontSize: 16, fontWeight: 600}
+              title="Тесты"                                         // заголовок таблицы
+              icons={tableIcons}                                    // иконки, которые использут компонент для отображения действий
+              columns={this.state.columns}                          // заголовки колонок
+              data={this.props.data}                                // данные, которые отображаются в таблице
+              options={{                                            // опции таблицы
+                pageSizeOptions: [5, 10, 20],                       // количество строк на странице (выпадающий список)
+                headerStyle: {fontSize: 16, fontWeight: 600}        // стиль отображения заголовков
               }}
-              actions={[
+              actions={[                                            // нестандартные действия пользователя
                 {
-                  icon: ListAltIcon,
-                  tooltip: 'Редактирование вопросов',
-                  onClick: (event, rowData) => {
-                    // console.log(rowData);
-                    this.props.history.push(EDIT_QUESTIONS_PATH + '/' + rowData.key);
+                  icon: ListAltIcon,                                // иконка
+                  tooltip: 'Редактирование вопросов',               // подсказка
+                  onClick: (event, rowData) => {                    // что делаем при нажатии на иконку
+                    this.props.history.push(EDIT_QUESTIONS_PATH + '/' + rowData.key); // открываем страницу  с редактированием вопросов к тесту
                   }
                 },
                 rowData => ({
-                  icon: ChevronRight,
-                  tooltip: 'Изменить пароль доступа',
-                  onClick: (event, rowData) => this.setState({open: true, rowData: rowData}),
-                  disabled: rowData.access !== 1
+                  icon: ChevronRight,                               // иконка
+                  tooltip: 'Изменить пароль доступа',               // подсказка
+                  onClick: (event, rowData) => this.setState({open: true, rowData: rowData}), // вызов окна ввода пароля
+                  disabled: rowData.access !== 1                    // если тип доступа не ограниченный, данная возможность заблокируется
                 })
               ]}
-              localization={{
+              localization={{         // перевод некоторых сообщений
                 body: {
                   emptyDataSourceMessage: 'Данных нет. Для добавления теста нажмите кнопку со знаком +',
                   addTooltip: 'Добавить новый тест',
@@ -208,10 +207,6 @@ class Account extends React.Component {
                   lastTooltip: 'Перейти на последнюю страницу'
                 },
                 toolbar: {
-                  addRemoveColumns: 'Spalten hinzufügen oder löschen',
-                  nRowsSelected: '{0} Zeile(n) ausgewählt',
-                  showColumnsTitle: 'Zeige Spalten',
-                  showColumnsAriaLabel: 'Zeige Spalten',
                   exportTitle: 'Экспорт',
                   exportAriaLabel: 'Экспорт',
                   exportName: 'Экспорт в CSV',
@@ -219,22 +214,22 @@ class Account extends React.Component {
                   searchPlaceholder: 'Поиск'
                 }
               }}
-              editable={{
-                onRowAdd: newData =>
+              editable={{                           // стандартные действия
+                onRowAdd: newData =>                // добавление строки
                   new Promise(async (resolve) => {
-                    await this.props.addQuiz({...newData, access: parseInt(newData.access)});
+                    await this.props.addQuiz({...newData, access: parseInt(newData.access)}); // добавляем тест в бд
                     resolve();
                   }),
-                onRowUpdate: (newData, oldData) =>
+                onRowUpdate: (newData, oldData) =>  // редактирование строки
                   new Promise((resolve) => {
                     setTimeout(() => {
-                      this.props.setQuiz({...newData, access: parseInt(newData.access)}, oldData.tableData.id);
+                      this.props.setQuiz({...newData, access: parseInt(newData.access)}, oldData.tableData.id);   // редактируем тест в бд
                       resolve();
                     }, 0)
                   }),
-                onRowDelete: oldData =>
+                onRowDelete: oldData =>             // удаление строки
                   new Promise(async (resolve) => {
-                    await this.props.delQuiz(oldData);
+                    await this.props.delQuiz(oldData);    // удаление теста из бд
                     resolve()
                   }),
               }}
@@ -285,20 +280,18 @@ class Account extends React.Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.listQuizes);
   return {
-    data: state.listQuizes,
-    user: state.user,
+    data: state.listQuizes,   // список тестов
+    user: state.user,         // пользователь, зарегистрированный в системе
   }
 }
 
 
 function mapDispatchToProps(dispatch) {
-
   return {
-    addQuiz: (quiz) => dispatch(addQuiz(quiz)),
-    setQuiz: (quiz, index) => dispatch(setQuiz(quiz, index)),
-    delQuiz: (quiz) => dispatch(delQuiz(quiz)),
+    addQuiz: (quiz) => dispatch(addQuiz(quiz)),                 // добавить тест
+    setQuiz: (quiz, index) => dispatch(setQuiz(quiz, index)),   // редактировать тест
+    delQuiz: (quiz) => dispatch(delQuiz(quiz)),                 // удалить тест
   }
 }
 

@@ -3,7 +3,6 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
-// import Card from '@material-ui/core/Card';
 import MaterialTable from 'material-table'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -29,16 +28,12 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-// import Grid from '@material-ui/core/Grid';
+
 import Copyright from "../../Components/Copyright/copyright";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core/styles/index";
 import { TEST_PATH} from "../../Route/path";
 import {withRouter} from 'react-router-dom'
-// import {initAnswerList, addAnswer, delAnswer, setAnswer} from "../../Store/actions/rootActions";
-// import {getAllQuiz} from "../../Store/actions/quizFirebase";
-// import ListAltIcon from "@material-ui/icons/ListAlt";
-// import {EDIT_ANSWERS_PATH} from "../../Route/path";
 
 const useStyles = theme => ({
   root: {
@@ -114,7 +109,6 @@ class MainPage extends React.Component {
 
   render() {
     const {classes} = this.props;
-    console.log(this.props);
     return (
       <div>
         {!this.props.data || this.props.loader ?
@@ -125,29 +119,25 @@ class MainPage extends React.Component {
             <CssBaseline/>
             <div className={classes.root}>
               <MaterialTable
-                title="Список доступных тестов"
-                icons={tableIcons}
-                columns={this.state.columns}
-                data={this.props.data}
-                options={{
-                  pageSizeOptions: [5, 10, 20],
-                  headerStyle: {fontSize: 16, fontWeight: 600},
-                  // rowStyle: rowData => ({
-                  //   fontSize: "25px",
-                  //   color: 'red'
-                  // })
+                title="Список доступных тестов"                           // Загловок таблицы
+                icons={tableIcons}                                        // Иконки таблицы
+                columns={this.state.columns}                              // Заголовки столбцов таблицы
+                data={this.props.data}                                    // Данные, которые будут отображены в строках таблицы
+                options={{                                                // Опции
+                  pageSizeOptions: [5, 10, 20],                           // Количество строк на экране
+                  headerStyle: {fontSize: 16, fontWeight: 600},           // Стили заголовков таблицы
                 }}
-                onRowClick={((evt, selectedRow) => {
-                  if (selectedRow.access === 1) {
-                    this.setState({
+                onRowClick={((evt, selectedRow) => {                      // При нажатии на строку таблицы
+                  if (selectedRow.access === 1) {                         // Если доступ до теста - ограниченный
+                    this.setState({                                       // Запросим пароль
                       open: true,
                       password: selectedRow.password ? selectedRow.password : '123456',
                       key: selectedRow.key
                     })
-                  } else
+                  } else                                                  // иначе, сразу перейдем на страницу для прохождения теста
                     this.props.history.push(TEST_PATH + '/' + selectedRow.key);
                 })}
-                localization={{
+                localization={{                                           // перевод основных сообщений
                   body: {
                     emptyDataSourceMessage: 'Тестов для прохождения нет. ',
                     addTooltip: 'Добавить новый тест',
@@ -183,10 +173,7 @@ class MainPage extends React.Component {
                     lastTooltip: 'Перейти на последнюю страницу'
                   },
                   toolbar: {
-                    addRemoveColumns: 'Spalten hinzufügen oder löschen',
                     nRowsSelected: '{0} Ответ(ов) укзаны как правильные',
-                    showColumnsTitle: 'Zeige Spalten',
-                    showColumnsAriaLabel: 'Zeige Spalten',
                     exportTitle: 'Экспорт',
                     exportAriaLabel: 'Экспорт',
                     exportName: 'Экспорт в CSV',
@@ -234,8 +221,6 @@ class MainPage extends React.Component {
             </Dialog>
           </Container>
         }
-
-
       </div>
 
     );
@@ -243,21 +228,13 @@ class MainPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.listQuizes);
   return {
-    data: state.listQuizes,
-    questions: state.questions,
-    user: state.user,
-    loader: state.loader
+    data: state.listQuizes,         // список тестов
+    questions: state.questions,     // список вопросов
+    user: state.user,               // пользователь
+    loader: state.loader            // флаг, говорящий что система занята
   }
 }
 
 
-function mapDispatchToProps(dispatch) {
-
-  return {
-    // getAllQuiz: () => dispatch(getAllQuiz())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(withRouter(MainPage)))
+export default connect(mapStateToProps)(withStyles(useStyles)(withRouter(MainPage)))
